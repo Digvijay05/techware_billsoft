@@ -1,0 +1,173 @@
+#Dry Cleaning
+*Gents Wear Price/Piece
+*Shirts
+Shirt 150/-
+Shirt Fancy 200/-
+Shirt Woolen 200/-
+Sweat Shirt 350/-
+*Pants/Jeans
+Pants/Jeans 150/-
+Pants Woolen 200/-
+*Coats
+Long Coat 500/-
+Over Coat 750/-
+Coat Simple 225/-
+Coat Woolen 300/-
+Coat Velvet 450/-
+*Jackets
+Jacket Simple 200/-
+Jacket Woolen 300/-
+Jacket Long 400/-
+Jacket Half 200/-
+Leather Jacket Pure 1000/-
+Leather Jacket PU 500/-
+*Pullovers
+Pullover 250/-
+Half Pullover 200/-
+*Sherwanis
+Sherwani Simple 500/-
+Sherwani Embroidery 850/-
+*Suits
+Suit 2pc Simple 350/-
+Suit 2pc Woolen 500/-
+Suit 3pc Simple 500/-
+Suit 3pc Woolen 650/-
+Vasket 150/-
+Kurta Suit 250/-
+Safari Suit 350/-
+Tie 50/-
+*T-Shirts
+T-Shirt Polo 120/-
+T-Shirt Round Neck 100/-
+T-Shirt Printed 150/-
+T-Shirt Full Sleeve 150/-
+*Shorts
+Shorts 70/-
+*Caps
+Cap 60/-
+
+*Ladies Wear Price/Piece
+Shirt 150/-
+*Kamez
+Kamez Simple 150/-
+Kamez Embroidery 200/-
+Kamez Heavy Embroidery 250/-
+*Salwars
+Salwar 100/-
+Salwar Embroidery 150/-
+*Suits
+Ladies Suit 2pc Simple 250/-
+Ladies Suit 2pc Embroidery 350/-
+Ladies Suit 3pc Simple 380/-
+Ladies Suit 3pc Embroidery 480/-
+Ladies Suit 3pc Heavy Embroidery 550/-
+Blazer 225/-
+*Coats
+Long Coat 500/-
+Over Coat 750/-
+Cardigan 250/-
+*T-Shirts
+T-Shirt 120/-
+*Skirts
+Skirt Simple 200/-
+Skirt Embroidery 300/-
+*Dress
+Dress Simple 250/-
+Dress Embroidery 450/-
+Dress Heavy Embroidery 650/-
+*Gowns
+Gown Simple 450/-
+Gown Embroidery 550/-
+Gown Embroidery Heavy 850/-
+*Lehngas
+Lehnga Simple 350/-
+Lehnga Embroidery 600/-
+Lehnga Hevy Embroidery 1000/-
+Wedding Lehnga 2500/-
+Wdding Lehnga Special 3500/-
+*Jackets
+Jacket Simple 200/-
+Jacket Woolen 300/-
+Leather Jacket PU 500/-
+Leather Jacket Pure 1000/-
+*Pullovers
+Pull Over 200/-
+Half Pullover 150/-
+*Pants/Jeans
+Pants/Jeans 150/-
+*Saree
+Saree Simple 250/-
+Saree Work 350/-
+Saree Heavy Work 800/-
+*Blouse
+Blouse Simple 100/-
+Blouse Embroidery 200/-
+*Choli
+Choli 150/-
+Choli Embroidery 250/-
+*Jump Suits
+Jump Suit 250/-
+*Tops
+Top Simple 120/-
+Top Embroidery 150/-
+*Dupattas
+Dupatta Simple 80/-
+Dupatta Embroidery 150/-
+*Kids Section Price/Piece
+*T-Shirts
+T-Shirt 60/-
+*Pants/Jeans
+Pants/Jeans 75/-
+*Jackets
+Jacket Half 100/-
+Jacket Full 180/-
+*Suits
+Blazer 150/-
+Suit 2pc 175/-
+Suit 3pc 250/-
+*Shirts
+Shirt 75/-
+Sweat Shirt 100/-
+*Kurta Pajama
+Kurta Pajama 125/-
+*Girl Dresses
+Dress Girl Simple 150/-
+Dress Girl Embroidery 300/-
+*Coats
+Coat 150/-
+*Shorts
+Shorts 50/-
+*Soft Toys
+Soft Toy Small Size 250/-
+Soft Toy Medium Size 350/-
+Soft Toy Large Size 500/-
+*House Hold Section Price/Piece
+*Bed
+Bed Sheet Double 250/-
+Bed Sheet Single 200/-
+Bed Cover 300/-
+*Pillows
+Pillow Cover 100/-
+Pillow Cover Work 150/-
+*Curtains
+Curtain Simple Per Panel 200/-
+Curtain Lining 250/-
+Curtain Lining Heavy 300/-
+Curtain Velvet/Swead 375/-
+Sheer Curtains 500/-
+*Blankets
+Blanket Single 250/-
+Blanket Double 350/-
+Quilt Double 450/-
+*Gloves
+Gloves 120/-
+Gloves Leather 250/-
+*Accessories Section Price/Piece
+*Ladies Bags
+Ladies Bag Small 400/-
+Ladies Bag Medium 700/-
+Ladies Bag Large 900/-
+*Shoes
+Sport Shoes 250/-
+Swead Shoes 600/-
+Swead Shoes High Ankle 850/-

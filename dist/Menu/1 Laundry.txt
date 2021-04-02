@@ -1,0 +1,11 @@
+#Laundry
+*Clothes
+Normal wash 55/-
+Conditioner wash 60/-
+Ezee wash 65/-
+*Blankets
+Single Bed,Single Layer Blanket 200/-
+Single Bed,Double Layer Blanket 220/-
+Double Bed,Single Layer Blanket 240/-
+Double Bed,Double Layer Blanket 260/-
+
