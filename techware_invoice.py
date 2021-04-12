@@ -8,6 +8,7 @@ from datetime import date, timedelta
 from tkinter import *
 from tkinter import messagebox as tmsg
 from tkinter import ttk, scrolledtext
+from Digvijay_Algos.custom_widgets import Custom_treeview
 
 import openpyxl.drawing.image
 import wand
@@ -22,24 +23,25 @@ from wand import exceptions
 
 
 class Invoice:
+    shippingprice: int
 
     # Initializing The Invoice
     def __init__(self, root):
         # Root Window
-        self.root = root
-        self.root = root
-        w, h = self.root.winfo_screenwidth(), root.winfo_screenheight()
-        self.root.title("Unsaved Invoice")
+        self.invoice_root = root
+        self.invoice_root = root
+        w, h = self.invoice_root.winfo_screenwidth(), root.winfo_screenheight()
+        self.invoice_root.title("Unsaved Invoice")
         # root.geometry("%dx%d+92+12" % (1183, 684))
-        self.root['bg'] = "white"
-        self.root.state("zoomed")
-        self.root.resizable(0, 0)
+        self.invoice_root['bg'] = "white"
+        self.invoice_root.state("zoomed")
+        self.invoice_root.resizable(0, 0)
 
         # Style Of TTK
-        self.style = ttk.Style(self.root)
+        self.style = ttk.Style(self.invoice_root)
 
         # Loading TTK Themes
-        self.root.tk.eval("""
+        self.invoice_root.tk.eval("""
                 set base_theme_dir C:/Users/Digvijay/Downloads/awthemes-10.2.0/awthemes-10.2.0
 
                 package ifneeded awthemes 10.2.0 \
@@ -55,8 +57,8 @@ class Invoice:
                 """)
 
         # Load The Awdark And Awlight Themes
-        self.root.tk.call("package", "require", 'awthemes')
-        self.root.tk.call("package", "require", 'awlight')
+        self.invoice_root.tk.call("package", "require", 'awthemes')
+        self.invoice_root.tk.call("package", "require", 'awlight')
         # self.root.tk.call("package", "require", 'awbreeze')
 
         # Using Theme AWLIGHT
@@ -95,15 +97,8 @@ class Invoice:
         self.style.map('Retail.TLabel',
                        background=[('!active', 'black'), ('pressed', 'white'), ('active', 'white')])
 
-        # Treeview Style
-        self.style.configure("T.Treeview", background="black", fieldbackground="white", foreground="black")
-
-        # Treeview Heading Style
-        self.style.configure("T.Treeview.Heading", background="#26e881", foreground="white",
-                             rowheight=35, font=("Calibri", 15))
-
         # Invoice Information Frame
-        self.invoice_information_lbl = LabelFrame(self.root, text="Invoice Information", bg="white")
+        self.invoice_information_lbl = LabelFrame(self.invoice_root, text="Invoice Information", bg="white")
         self.invoice_information_lbl.place(relx=0, rely=0, relwidth=1, relheight=0.15)
 
         # Variable for Contact No.
@@ -163,6 +158,20 @@ class Invoice:
         self.sold_by_txt.place(relx=0.375, rely=0.2, relwidth=0.1)
         self.sold_by_txt.current(0)
 
+        self.staff_list = ["Select", ]
+
+        self.conn = sqlite3.connect("DB\\Employee.db")
+        self.cursor = self.conn.cursor()
+        self.cursor.execute("SELECT * FROM STAFF")
+        self.rows = self.cursor.fetchall()
+        print(self.rows)
+        for i in range(0, int(len(self.rows))):
+            self.staff_name = self.rows[i][6]
+            print("Staff Name:- " + self.staff_name)
+            self.staff_list.append(self.staff_name)
+        self.sold_by_txt.config(values=self.staff_list)
+        self.sold_by_txt.current(0)
+
         # Contact Label
         self.contact_no_lbl = Label(self.invoice_information_lbl, text="Contact *", font=("Calibri", 10), bg="white")
         self.contact_no_lbl.place(relx=0, rely=0.5)
@@ -216,7 +225,7 @@ class Invoice:
         self.client_address_txt.place(relx=0.250, rely=0.7, relwidth=0.1)
 
         # Particulars Frame
-        self.particulars_lbl = LabelFrame(self.root, text="Particulars", bg="white")
+        self.particulars_lbl = LabelFrame(self.invoice_root, text="Particulars", bg="white")
         self.particulars_lbl.place(relx=0, rely=0.15, relwidth=1, relheight=0.51)
 
         # Bar Code / QR Code
@@ -235,8 +244,11 @@ class Invoice:
                                           variable=self.bar_var)
         self.bar_code_radio.place(relx=0.065, rely=0)
 
+        # Bar Code Variable
+        self.item_code_var = StringVar()
+
         # Bar Code Entry
-        self.item_code_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.item_code_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_code_var)
         self.item_code_txt.place(relx=0, rely=0.1, relwidth=0.13)
 
         # Item Name Label
@@ -295,8 +307,7 @@ class Invoice:
         self.units_names = []
 
         for i in range(0, int(len(self.rows))):
-            self.units_name = self.rows[i][1]
-            self.units_names.append(self.items_name)
+            self.units_names.append(self.rows[i][4])
 
         self.item_name_txt.config(completevalues=self.units_names)
 
@@ -304,16 +315,22 @@ class Invoice:
         self.item_rate_lbl = Label(self.particulars_lbl, text="Item Rate *", font=("Calibri", 10), bg="white")
         self.item_rate_lbl.place(relx=0.490, rely=0)
 
+        # Item Rate Variable
+        self.item_rate_var = StringVar()
+
         # Item Rate Entry
-        self.item_rate_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.item_rate_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_rate_var)
         self.item_rate_txt.place(relx=0.490, rely=0.05, relwidth=0.06)
 
         # Item Quantity Label
         self.item_qty_lbl = Label(self.particulars_lbl, text="Item Quantity", font=("Calibri", 10), bg="white")
         self.item_qty_lbl.place(relx=0.560, rely=0)
 
+        # Item Quantity Variable
+        self.item_qty_var = StringVar()
+
         # Item Quantity Entry
-        self.item_qty_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.item_qty_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_qty_var)
         self.item_qty_txt.place(relx=0.560, rely=0.05, relwidth=0.06)
 
         # Discount Label
@@ -411,57 +428,14 @@ class Invoice:
         self.particulars_treeview_frame.place(relx=0, rely=0.6, relwidth=1, relheight=0.6)
 
         # Particulars Treeview
-        self.particulars_treeview = ttk.Treeview(self.particulars_treeview_frame, style="T.Treeview",
-                                                 columns=(
-                                                     "No.", "Name", "Rate",
-                                                     "Quantity", "Item Code", "Sub-Category", "Category"), )
-        # height=len(self.rows))
-
-        # Vertical Scrollbar
-        self.vsb = Scrollbar(self.particulars_treeview,
-                             orient="vertical",
-                             command=self.particulars_treeview.yview
-                             )
-
-        # Scroll Command For Particulars Treeview
-        self.particulars_treeview['yscrollcommand'] = self.vsb.set
-
-        # Treeview Headings
-        self.particulars_treeview.heading("No.", text="No.")
-        self.particulars_treeview.heading("Name", text="Name")
-        self.particulars_treeview.heading("Rate", text="Rate")
-        self.particulars_treeview.heading("Quantity", text="Quantity")
-        self.particulars_treeview.heading("Item Code", text="Item Code")
-        self.particulars_treeview.heading("Sub-Category", text="Sub-Category")
-        self.particulars_treeview.heading("Category", text="Category")
-        self.particulars_treeview["displaycolumns"] = ("No.", "Name", "Rate",
-                                                       "Quantity", "Item Code", "Sub-Category", "Category")
-        self.particulars_treeview["show"] = "headings"
-
-        # Treeview Columns
-        self.particulars_treeview.column("No.", width=150, anchor='center')
-        self.particulars_treeview.column("Name", width=150, anchor='center')
-        self.particulars_treeview.column("Rate", width=150, anchor='center')
-        self.particulars_treeview.column("Quantity", width=150, anchor='center')
-        self.particulars_treeview.column("Item Code", width=150, anchor='center')
-        self.particulars_treeview.column("Sub-Category", width=150, anchor='center')
-        self.particulars_treeview.column("Category", width=150, anchor='center')
-
-        # Tags for Treeview
-        self.particulars_treeview.tag_configure('oddrow', background="white")
-        self.particulars_treeview.tag_configure('evenrow', background="#c5dbbf")
-
-        # Packing Vertical Scrollbar
-        self.vsb.pack(side=RIGHT, fill=Y)
-
-        # Configuring Vertical Scrollbar
-        self.vsb.configure(command=self.particulars_treeview.yview)
-
-        # Packing Particulars Treeview
-        self.particulars_treeview.pack(fill=BOTH, expand=1)
+        self.particulars_treeview = Custom_treeview(self.particulars_treeview_frame,
+                                                    column_name=[
+                                                        "No.", "Name", "Rate",
+                                                        "Quantity", "Item Code", "Sub-Category", "Category"],
+                                                    column_width=150)
 
         # Payment Frame
-        self.payment_lbl = LabelFrame(self.root, text="Payment", bg="white")
+        self.payment_lbl = LabelFrame(self.invoice_root, text="Payment", bg="white")
         self.payment_lbl.place(relx=0.55, rely=0.66, relwidth=0.22, relheight=0.33)
 
         # Payment Date Label
@@ -502,22 +476,27 @@ class Invoice:
         self.payment_amount_var = StringVar()
 
         # Payment Amount Entry
-        self.payment_amount_txt = ttk.Entry(self.payment_lbl, text="", font=("Calibri", 12))
+        self.payment_amount_txt = ttk.Entry(self.payment_lbl, text="", font=("Calibri", 12),
+                                            textvariable=self.payment_amount_var)
         self.payment_amount_txt.place(relx=0.3, rely=0.6, relwidth=0.6)
 
         # Payment Balance Label
         self.payment_balance_lbl = Label(self.payment_lbl, text="Balance", bg="white", font=("Calibri", 12))
         self.payment_balance_lbl.place(relx=0, rely=0.8)
 
+        # Payment Balance variable
+        self.payment_balance_var = StringVar()
+
         # Payment Amount Entry
-        self.payment_balance_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 12), state='disabled')
+        self.payment_balance_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 12), state='disabled',
+                                             textvariable=self.payment_balance_var)
         self.payment_balance_txt.place(relx=0.3, rely=0.8, relwidth=0.6)
 
         # Variable for Discount CheckButton
         self.discount_var = IntVar()
 
         # Discount CheckButton
-        self.discount_chkbox = ttk.Checkbutton(self.root, text="Apply Discount To All",
+        self.discount_chkbox = ttk.Checkbutton(self.invoice_root, text="Apply Discount To All",
                                                variable=self.discount_var, onvalue=1, offvalue=0, takefocus=False,
                                                style='Red.TCheckbutton', command=self.add_discount)
 
@@ -529,16 +508,16 @@ class Invoice:
         self.shipping_var.set(1)
 
         # Shipping CheckButton
-        self.shipping_chkbox = ttk.Checkbutton(self.root, text="Add Shipping",
+        self.shipping_chkbox = ttk.Checkbutton(self.invoice_root, text="Add Shipping",
                                                variable=self.shipping_var, onvalue=1, offvalue=0, takefocus=False,
                                                style='Red.TCheckbutton', command=self.add_shipping)
-        # self.add_shipping()
+        self.add_shipping()
 
         # Packing Shipping CheckButton
         self.shipping_chkbox.place(relx=0.33, rely=0.77)
 
         # Delivery Terms Frame
-        self.delivery_terms_lbl = LabelFrame(self.root, text="Delivery Terms", bg="white")
+        self.delivery_terms_lbl = LabelFrame(self.invoice_root, text="Delivery Terms", bg="white")
         self.delivery_terms_lbl.place(relx=0.25, rely=0.88, relwidth=0.22, relheight=0.1)
 
         # Delivery Terms Entry
@@ -546,16 +525,16 @@ class Invoice:
         self.delivery_terms_txt.pack(fill=BOTH, expand=1)
 
         # Remarks Frame
-        self.remarks_lbl = LabelFrame(self.root, text="Remarks(Private Use)", bg="white")
+        self.remarks_lbl = LabelFrame(self.invoice_root, text="Remarks(Private Use)", bg="white")
         self.remarks_lbl.place(relx=0.01, rely=0.88, relwidth=0.22, relheight=0.1)
 
         # Remarks Entry
         self.remarks_txt = scrolledtext.ScrolledText(self.remarks_lbl, font=("Calibri", 12))
         self.remarks_txt.pack(fill=BOTH, expand=1)
-        self.root.update_idletasks()
+        self.invoice_root.update_idletasks()
 
         # Total Amount Frame
-        self.total_amount_frame = LabelFrame(self.root, text="Total Amount", bg="white")
+        self.total_amount_frame = LabelFrame(self.invoice_root, text="Total Amount", bg="white")
         self.total_amount_frame.place(relx=0.78, rely=0.66, relwidth=0.22, relheight=0.2)
 
         # Total Price Variable
@@ -607,11 +586,11 @@ class Invoice:
         self.total_amount_txt.place(relx=0.3, rely=0.75)
 
         # Save Button
-        self.save_btn = ttk.Button(self.root, text="Save", style="S.TButton", command=self.save_operation)
+        self.save_btn = ttk.Button(self.invoice_root, text="Save", style="S.TButton", command=self.save_operation)
         self.save_btn.place(relx=0.8, rely=0.88)
 
         # Save & Print Button
-        self.save_print_btn = ttk.Button(self.root, text="Save & Print", style="S.TButton",
+        self.save_print_btn = ttk.Button(self.invoice_root, text="Save & Print", style="S.TButton",
                                          command=self.print_operation)
         self.save_print_btn.place(relx=0.9, rely=0.88)
 
@@ -620,18 +599,21 @@ class Invoice:
         self.conn = sqlite3.connect("DB\\Items.db")
         self.cursor = self.conn.cursor()
 
-        self.cursor.execute("SELECT * FROM ITEMS where Item_Name = ?", (self.client_name_txt.get(),))
+        self.cursor.execute("SELECT * FROM ITEMS where Item_Name = ?", (self.item_name_txt.get(),))
         self.rows = self.cursor.fetchone()
+        print(self.rows)
 
-        self.category_name = self.rows[5]
-        self.sub_category_name = self.rows[8]
-        self.item_code_name = self.rows[5]
-        self.item_name_name = self.rows[8]
+        self.category_name = self.rows[1]
+        self.sub_category_name = self.rows[2]
+        self.item_code_name = self.rows[3]
         self.item_rate_name = self.rows[5]
-        self.item_qty_name = self.rows[8]
+        self.item_qty_name = self.rows[6]
 
-        self.contact_no_var.set(self.client_contact)
-        self.contact_address_var.set(self.client_address)
+        self.category_txt.set(self.category_name)
+        self.sub_category_txt.set(self.sub_category_name)
+        self.item_code_var.set(self.item_code_name)
+        self.item_rate_var.set(self.item_rate_name)
+        self.item_qty_var.set("1")
 
     # Adding Client Info
     def client_info_add(self, event):
@@ -643,9 +625,11 @@ class Invoice:
 
         self.client_contact = self.rows[5]
         self.client_address = self.rows[8]
+        self.client_balance = self.rows[22]
 
         self.contact_no_var.set(self.client_contact)
         self.contact_address_var.set(self.client_address)
+        self.payment_balance_var.set(self.client_balance)
 
     # Retail Options Window Function
     # def retail_options(self, event):
@@ -702,10 +686,9 @@ class Invoice:
 
     # Adding Discount Option
     def add_discount(self):
-
         # IF ELSE Statement For Adding And Removing Discount Entries According to CheckButton
         if self.discount_var.get() == 1:
-            self.discount_charges_txt = ttk.Entry(self.root, font=("Calibri", 12))
+            self.discount_charges_txt = ttk.Entry(self.invoice_root, font=("Calibri", 12))
             self.discount_charges_txt.place(relx=0.24, rely=0.77, relwidth=0.05)
             self.discount_charges_txt.bind("<KeyRelease>", self.update_total_price_event)
         else:
@@ -714,35 +697,98 @@ class Invoice:
     def update_total_price_event(self, event):
         self.subPrice = 0
         self.totalprice = 0
+        self.discountprice = 0
+        self.shippingprice = 0
+
         for i in self.categories.keys():
             for j in self.items[i].keys():
                 self.subPrice += int(self.items[i][j][3])
+                print("Sub Total:- " + str(self.subPrice))
+                print("Total:- " + str(self.totalprice))
+                print("Discount:- " + str(self.discountprice))
+                print("Shipping:- " + str(self.shippingprice))
+        self.totalprice += self.subPrice
+        print("Sub Total:- " + str(self.subPrice))
+        print("Total:- " + str(self.totalprice))
+        print("Discount:- " + str(self.discountprice))
+        print("Shipping:- " + str(self.shippingprice))
         if self.subPrice == 0:
             self.subTotalPrice.set("")
         else:
             self.subTotalPrice.set("Rs." + str(self.subPrice) + " /-")
+            self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
             self.payment_amount_var.set(str(self.subPrice))
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
         print(self.discount_var.get())
-        if self.discount_var.get() == 1:
-            self.discountPrice.set(str(self.discount_charges_txt.get()))
+        if self.discount_var.get() == 1 and self.discount_charges_txt.get() != "":
+
+            self.discountprice += int(self.discount_charges_txt.get())
+            self.discountPrice.set(str(self.discountprice))
+
+            self.totalprice -= int(self.discountprice)
+            self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
         else:
-            self.discountPrice.set(str(0))
+            self.discountPrice.set(str(self.discountprice))
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
         if self.shipping_var.get() == 1:
-            if self.shipping_charges_sel.get() != "Select":
-                self.shippingCharges.set(str(self.shipping_charges_sel.get()))
-            else:
-                self.shippingCharges.set(str(self.shipping_charges_txt.get()))
+            if self.shipping_charges_sel and self.shipping_charges_txt:
+                if self.shipping_charges_sel.get() != "Select" and self.shipping_charges_txt.get() == "":
+                    self.shippingprice = int(self.shipping_charges_sel.get())
+                    self.shippingCharges.set(str(self.shippingprice))
+                    self.totalprice += self.shippingprice
+                    self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+                    print("Sub Total:- " + str(self.subPrice))
+                    print("Total:- " + str(self.totalprice))
+                    print("Discount:- " + str(self.discountprice))
+                    print("Shipping:- " + str(self.shippingprice))
+                elif self.shipping_charges_txt.get() != "":
+                    self.shipping_charges_sel.set("Select")
+                    self.shippingprice = int(self.shipping_charges_txt.get())
+                    self.shippingCharges.set(str(self.shippingprice))
+                    self.totalprice += self.shippingprice
+                    self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+                    print("Sub Total:- " + str(self.subPrice))
+                    print("Total:- " + str(self.totalprice))
+                    print("Discount:- " + str(self.discountprice))
+                    print("Shipping:- " + str(self.shippingprice))
+                elif self.shipping_charges_sel.get() == "Select" and self.shipping_charges_txt.get() == "":
+                    self.shippingprice = 0
+                    self.shippingCharges.set(str(self.shippingprice))
+                    self.totalprice += self.shippingprice
+                    self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+                    print("Sub Total:- " + str(self.subPrice))
+                    print("Total:- " + str(self.totalprice))
+                    print("Discount:- " + str(self.discountprice))
+                    print("Shipping:- " + str(self.shippingprice))
         else:
-            self.shippingCharges.set(str(0))
-        if self.totalprice == 0:
-            try:
-                self.totalprice = str(
-                    int(self.subPrice) - int(self.discountPrice.get()) + int(self.shippingCharges.get()))
-                self.totalPrice.set(self.totalprice)
-            except Exception as e:
-                self.totalprice = 0
-                self.shippingCharges.set(0)
-                self.totalPrice.set(self.totalprice)
+            self.shippingCharges.set(self.shippingprice)
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
+        print("Sub Total:- " + str(self.subPrice))
+        print("Total:- " + str(self.totalprice))
+        print("Discount:- " + str(self.discountprice))
+        print("Shipping:- " + str(self.shippingprice))
+        # if self.totalprice == 0:
+        #     try:
+        #         self.totalprice = str(
+        #             int(self.subPrice) - int(self.discountPrice.get()) + int(self.shippingCharges.get()))
+        #         self.totalPrice.set(self.totalprice)
+        #     except Exception as e:
+        #         self.totalprice = 0
+        #         self.shippingCharges.set(0)
+        #         self.totalPrice.set(self.totalprice)
 
     # Saving Bills
     def save_operation(self):
@@ -757,7 +803,7 @@ class Invoice:
             os.makedirs(self.file_path)
         print(self.items)
 
-        self.conn.execute("DROP TABLE INVOICES")
+        # self.conn.execute("DROP TABLE INVOICES")
 
         # Preparing Table For Invoices
         self.query = """CREATE TABLE IF NOT EXISTS INVOICES(
@@ -767,7 +813,6 @@ class Invoice:
                         Invoice_Date DATE NOT NULL,
                         Sold_By VARCHAR(500) NOT NULL,
                         Client_Contact INT(10) NOT NULL,
-                        Client_Type VARCHAR(500) NOT NULL,
                         Client_Name VARCHAR(500) NOT NULL,
                         Client_Address VARCHAR(5000) NOT NULL,
                         Discount INTEGER NOT NULL,
@@ -783,22 +828,21 @@ class Invoice:
                         Delivery_Terms VARCHAR(5000) NOT NULL)
                      """
         self.save_bill_query = """INSERT INTO INVOICES(Invoice_Type, Invoice_No, Invoice_Date,
-                                                        Sold_By, Client_Contact, Client_Type,
-                                                        Client_Name, Client_Address, Discount,
-                                                        Shipping, SubTotal, Total, Payment_Date, Payment_Mode,
+                                                        Sold_By, Client_Contact, Client_Name,
+                                                        Client_Address, Discount, Shipping,
+                                                        SubTotal, Total, Payment_Date, Payment_Mode,
                                                         Payment_No, Payment_Amount, Client_Balance,
                                                         Remarks, Delivery_Terms) 
                                                         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
         self.save_bill_values = (self.invoice_type_txt.get(), self.invoice_no_txt.get(),
                                  self.invoice_date_txt.get(), self.sold_by_txt.get(),
-                                 self.contact_no_txt.get(), self.retail_options_lbl.cget("text"),
-                                 self.client_name_txt.get(), self.client_address_txt.get(),
-                                 self.discountPrice.get(), self.shippingCharges.get(),
-                                 self.subTotalPrice.get(), self.totalPrice.get(),
-                                 self.payment_date_txt.get(), self.payment_mode_txt.get(),
-                                 self.txn_id_txt.get(), self.payment_amount_txt.get(),
-                                 self.payment_balance_txt.get(), self.remarks_txt.get("1.0", END),
-                                 self.delivery_terms_txt.get("1.0", END)
+                                 self.contact_no_txt.get(), self.client_name_txt.get(),
+                                 self.client_address_txt.get(), self.discountPrice.get(),
+                                 self.shippingCharges.get(), self.subTotalPrice.get(),
+                                 self.totalPrice.get(), self.payment_date_txt.get(),
+                                 self.payment_mode_txt.get(), self.txn_id_txt.get(),
+                                 self.payment_amount_txt.get(), self.payment_balance_txt.get(),
+                                 self.remarks_txt.get("1.0", END), self.delivery_terms_txt.get("1.0", END)
                                  )
         self.cursor.execute(self.query)
         self.cursor.execute(self.save_bill_query, self.save_bill_values)
@@ -817,7 +861,7 @@ class Invoice:
         self.cursor = self.conn.cursor()
         self.sql_string = '''UPDATE ID where Category = ?
                              SET Id = ?'''
-        self.sql_string_query = ("Invoice", self.invoice_number)
+        self.sql_string_query = (self.sql_string, ("Invoice", self.invoice_number))
         self.conn.commit()
         self.conn.close()
 
@@ -940,11 +984,11 @@ class Invoice:
             self.loading_bar.step(50)
             # Print Function
             self.print_excel()
-            self.root.update_idletasks()
+            self.invoice_root.update_idletasks()
             self.invoice = self.invoice_no_txt.get()
             # Destroying Root Window
-            self.root.destroy()
-            del self.root
+            self.invoice_root.destroy()
+            del self.invoice_root
             self.loading_bar.step(30)
             self.loading_screen.destroy()
 
@@ -1017,35 +1061,89 @@ class Invoice:
     def update_total_price(self):
         self.subPrice = 0
         self.totalprice = 0
+        self.discountprice = 0
+        self.shippingprice = 0
+
         for i in self.categories.keys():
             for j in self.items[i].keys():
                 self.subPrice += int(self.items[i][j][3])
+                print("Sub Total:- " + str(self.subPrice))
+                print("Total:- " + str(self.totalprice))
+                print("Discount:- " + str(self.discountprice))
+                print("Shipping:- " + str(self.shippingprice))
+        self.totalprice += self.subPrice
+        print("Sub Total:- " + str(self.subPrice))
+        print("Total:- " + str(self.totalprice))
+        print("Discount:- " + str(self.discountprice))
+        print("Shipping:- " + str(self.shippingprice))
         if self.subPrice == 0:
             self.subTotalPrice.set("")
         else:
             self.subTotalPrice.set("Rs." + str(self.subPrice) + " /-")
+            self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
             self.payment_amount_var.set(str(self.subPrice))
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
         print(self.discount_var.get())
-        if self.discount_var.get() == 1:
-            self.discountPrice.set(str(self.discount_charges_txt.get()))
+        if self.discount_var.get() == 1 and self.discount_charges_txt.get() != "":
+
+            self.discountprice += int(self.discount_charges_txt.get())
+            self.discountPrice.set(str(self.discountprice))
+
+            self.totalprice -= int(self.discountprice)
+            self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
         else:
-            self.discountPrice.set(str(0))
+            self.discountPrice.set(str(self.discountprice))
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
         if self.shipping_var.get() == 1:
-            if self.shipping_charges_sel.get() != "Select":
-                self.shippingCharges.set(str(self.shipping_charges_sel.get()))
-            else:
-                self.shippingCharges.set(str(self.shipping_charges_txt.get()))
+            if self.shipping_charges_sel and self.shipping_charges_txt:
+                if self.shipping_charges_sel.get() != "Select" and self.shipping_charges_txt.get() == "":
+                    self.shippingprice = int(self.shipping_charges_sel.get())
+                    self.shippingCharges.set(str(self.shippingprice))
+                    self.totalprice += self.shippingprice
+                    self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+                    print("Sub Total:- " + str(self.subPrice))
+                    print("Total:- " + str(self.totalprice))
+                    print("Discount:- " + str(self.discountprice))
+                    print("Shipping:- " + str(self.shippingprice))
+                elif self.shipping_charges_txt.get() != "":
+                    self.shipping_charges_sel.set("Select")
+                    self.shippingprice = int(self.shipping_charges_txt.get())
+                    self.shippingCharges.set(str(self.shippingprice))
+                    self.totalprice += self.shippingprice
+                    self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+                    print("Sub Total:- " + str(self.subPrice))
+                    print("Total:- " + str(self.totalprice))
+                    print("Discount:- " + str(self.discountprice))
+                    print("Shipping:- " + str(self.shippingprice))
+                elif self.shipping_charges_sel.get() == "Select" and self.shipping_charges_txt.get() == "":
+                    self.shippingprice = 0
+                    self.shippingCharges.set(str(self.shippingprice))
+                    self.totalprice += self.shippingprice
+                    self.totalPrice.set("Rs." + str(self.totalprice) + "/-")
+                    print("Sub Total:- " + str(self.subPrice))
+                    print("Total:- " + str(self.totalprice))
+                    print("Discount:- " + str(self.discountprice))
+                    print("Shipping:- " + str(self.shippingprice))
         else:
-            self.shippingCharges.set(str(0))
-        if self.totalprice == 0:
-            try:
-                self.totalprice = str(
-                    int(self.subPrice) - int(self.discountPrice.get()) + int(self.shippingCharges.get()))
-                self.totalPrice.set(self.totalprice)
-            except Exception as e:
-                self.totalprice = 0
-                self.shippingCharges.set(0)
-                self.totalPrice.set(self.totalprice)
+            self.shippingCharges.set(self.shippingprice)
+            print("Sub Total:- " + str(self.subPrice))
+            print("Total:- " + str(self.totalprice))
+            print("Discount:- " + str(self.discountprice))
+            print("Shipping:- " + str(self.shippingprice))
+        print("Sub Total:- " + str(self.subPrice))
+        print("Total:- " + str(self.totalprice))
+        print("Discount:- " + str(self.discountprice))
+        print("Shipping:- " + str(self.shippingprice))
 
     # Getting Object Entries From Outside
     def get_object(self, object):
@@ -1070,9 +1168,9 @@ class Invoice:
 
         # IF ELSE Statement For Adding And Removing Shipping Entries According to CheckButton
         if self.shipping_var.get() == 1:
-            self.shipping_charges_txt = ttk.Entry(self.root, font=("Calibri", 12))
+            self.shipping_charges_txt = ttk.Entry(self.invoice_root, font=("Calibri", 12))
             self.shipping_charges_txt.place(relx=0.43, rely=0.77, relwidth=0.05)
-            self.shipping_charges_sel = ttk.Combobox(self.root, values=["Select", "10", "15", "25", "50"])
+            self.shipping_charges_sel = ttk.Combobox(self.invoice_root, values=["Select", "10", "15", "25", "50"])
             self.shipping_charges_sel.place(relx=0.49, rely=0.77, relwidth=0.05)
             self.shipping_charges_sel.current(0)
             self.shipping_charges_txt.bind("<KeyRelease>", self.update_total_price_event)
@@ -1081,19 +1179,10 @@ class Invoice:
             self.shipping_charges_txt.destroy()
             self.shipping_charges_sel.destroy()
 
-    def add_shipping_percent(self):
-        self.shippingCharges.set(str(self.shipping_charges_sel.get()))
-        self.update_shipping_charges()
-
-    # Adding Shipping Charges Amount in ShippingCharges TXT
-    def update_shipping_charges(self):
-        self.shipping = self.shipping_charges_sel.get()
-        self.price = self.totalPrice.get()
-
     # Adding Particulars To Particulars Treeview
     def add_particular_func(self):
         if self.category_txt.get() == "Select" or self.item_name_txt.get() == "" or self.item_rate_txt.get() == "" or self.item_units_txt.get() == "":
-            tmsg.showerror("Error", "Please Fill All Required Fields.", parent=self.root)
+            tmsg.showerror("Error", "Please Fill All Required Fields.", parent=self.invoice_root)
         else:
             # Variables For Getting Row Values
             name = self.item_name_txt.get()
@@ -1122,9 +1211,16 @@ class Invoice:
 
             # IF ELSE Statement For Getting Last Row And Inserting It To Particulars Treeview
             if last_row != 0:
-                self.particulars_treeview.insert('', END,
-                                                 values=(last_row, name, rate, qty, item_code, sub_category, category),
-                                                 tags=('oddrow',))
+                if last_row % 2 == 0:
+                    self.particulars_treeview.insert('', END,
+                                                     values=(
+                                                     last_row, name, rate, qty, item_code, sub_category, category),
+                                                     tags=('evenrow',))
+                else:
+                    self.particulars_treeview.insert('', END,
+                                                     values=(
+                                                         last_row, name, rate, qty, item_code, sub_category, category),
+                                                     tags=('oddrow',))
                 self.update_total_price()
             else:
                 self.particulars_treeview.insert('', END,

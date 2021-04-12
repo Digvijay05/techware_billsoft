@@ -949,7 +949,8 @@ class Home:
 
                 print(rows)
                 if rows is None:
-                    self.cursor.execute("insert into ID(Id, Category) VALUES(?,?)", (self.add_id_txt.get(),self.add_id_category_txt.get()))
+                    self.cursor.execute("insert into ID(Id, Category) VALUES(?,?)",
+                                        (self.add_id_txt.get(), self.add_id_category_txt.get()))
                     tmsg.showinfo("Success", f"'{self.add_id_txt.get()}' Successfully Added!",
                                   parent=self.add_id_window)
                     self.conn.commit()
@@ -2316,15 +2317,15 @@ class Home:
 
             self.count = 0
             print(self.rows)
-            for No, Full_Name, DOB, Gender, EMAIL, Contact, City, State, Address, GSTIN, PAN, Contact_Person, Contact_Person_Number, Blood_Group, Document_Type, Document_No, Expiry_Date, Issue_Date, Communication_SMS, Communication_Email, Sales_Commission, Remarks in self.rows:
+            for row in self.rows:
                 if self.count % 2 == 0:
                     self.client_table.insert('', END,
-                                             values=(No, Full_Name, Address, City, State, Contact, GSTIN),
+                                             values=(row[0], row[1], row[8], row[6], row[7], row[5], row[9]),
                                              tags=('evenrow',))
                     self.count += 1
                 else:
                     self.client_table.insert('', END,
-                                             values=(No, Full_Name, Address, City, State, Contact, GSTIN),
+                                             values=(row[0], row[1], row[8], row[6], row[7], row[5], row[9]),
                                              tags=('oddrow',))
                     self.count += 1
             self.vsb.pack(side=RIGHT, fill=Y)
