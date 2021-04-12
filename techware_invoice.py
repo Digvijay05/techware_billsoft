@@ -3,7 +3,6 @@ import json
 import os
 import sqlite3
 import time
-import re
 from datetime import date, timedelta
 from tkinter import *
 from tkinter import messagebox as tmsg
@@ -16,7 +15,7 @@ import wand.image
 import win32com
 import win32com.client
 from openpyxl import load_workbook
-from pywintypes import com_error
+import pywintypes
 from tkcalendar import DateEntry
 from ttkwidgets.autocomplete import *
 from wand import exceptions
@@ -428,11 +427,12 @@ class Invoice:
         self.particulars_treeview_frame.place(relx=0, rely=0.6, relwidth=1, relheight=0.6)
 
         # Particulars Treeview
-        self.particulars_treeview = Custom_treeview(self.particulars_treeview_frame,
+        self.particulars_treeview = Custom_treeview(master=self.particulars_treeview_frame,
                                                     column_name=[
                                                         "No.", "Name", "Rate",
                                                         "Quantity", "Item Code", "Sub-Category", "Category"],
                                                     column_width=150)
+        self.particulars_treeview.pack(fill=BOTH, expand=1)
 
         # Payment Frame
         self.payment_lbl = LabelFrame(self.invoice_root, text="Payment", bg="white")
@@ -1181,7 +1181,8 @@ class Invoice:
 
     # Adding Particulars To Particulars Treeview
     def add_particular_func(self):
-        if self.category_txt.get() == "Select" or self.item_name_txt.get() == "" or self.item_rate_txt.get() == "" or self.item_units_txt.get() == "":
+        if self.category_txt.get() == "Select" or self.item_name_txt.get() == "" or self.item_rate_txt.get() == "" or\
+                self.item_units_txt.get() == "":
             tmsg.showerror("Error", "Please Fill All Required Fields.", parent=self.invoice_root)
         else:
             # Variables For Getting Row Values
@@ -1207,23 +1208,25 @@ class Invoice:
             self.items[category][name] = self.lis
 
             # Getting The Last Row Of Particulars Treeview
-            last_row = len(self.particulars_treeview.get_children(""))
+            last_row = len(self.particulars_treeview.custom_treeview.get_children("")) + 1
 
             # IF ELSE Statement For Getting Last Row And Inserting It To Particulars Treeview
             if last_row != 0:
                 if last_row % 2 == 0:
-                    self.particulars_treeview.insert('', END,
-                                                     values=(
-                                                     last_row, name, rate, qty, item_code, sub_category, category),
-                                                     tags=('evenrow',))
+                    self.particulars_treeview.custom_treeview.insert('', END,
+                                                                     values=(
+                                                                         last_row, name, rate, qty, item_code,
+                                                                         sub_category, category),
+                                                                     tags=('evenrow',))
                 else:
-                    self.particulars_treeview.insert('', END,
-                                                     values=(
-                                                         last_row, name, rate, qty, item_code, sub_category, category),
-                                                     tags=('oddrow',))
+                    self.particulars_treeview.custom_treeview.insert('', END,
+                                                                     values=(
+                                                                         last_row, name, rate, qty, item_code,
+                                                                         sub_category, category),
+                                                                     tags=('oddrow',))
                 self.update_total_price()
             else:
-                self.particulars_treeview.insert('', END,
+                self.particulars_treeview.custom_treeview.insert('', END,
                                                  values=(1, name, rate, qty, item_code, sub_category, category),
                                                  tags=('oddrow',))
                 self.update_total_price()
@@ -1381,6 +1384,7 @@ class Invoice:
         self.add_item_btn = ttk.Button(self.item_menu, text="Add Item", compound=LEFT,
                                        cursor="hand2", style="S.TButton", command=self.add_item_to_menu)
         self.add_item_btn.pack(anchor=W)
+
 
     # Adding Items To Particulars Treeview from Item Treeview
     def add_item_to_menu(self):

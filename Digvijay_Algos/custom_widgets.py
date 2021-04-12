@@ -4,13 +4,12 @@ from tkinter.constants import *
 import sqlite3
 
 
-class Custom_treeview:
+class Custom_treeview(Treeview):
     """
     This ttk Treeview is made custom for Any Software
     """
 
     def __init__(self, *args, **kwargs):
-
         self.treeview_root = kwargs["master"]
 
         self.style = Style(self.treeview_root)
@@ -39,10 +38,10 @@ class Custom_treeview:
         self.style.theme_use('awlight')
 
         # Treeview Style
-        self.style.configure("T.Treeview",background="white", foreground="black", fieldbackground="white",
+        self.style.configure("T.Treeview", background="white", foreground="black", fieldbackground="white",
                              )
         self.style.map("T.Treeview",
-                       background=[("selected","#00a62d")])
+                       background=[("selected", "#00a62d")])
         # Treeview Heading Style
         self.style.map("T.Treeview.Heading",
                        background=[("active", "#00b856",), ("!active", "#26e881",), ("pressed", "#7e8c7a",), ],
@@ -78,47 +77,42 @@ class Custom_treeview:
         # Configuring Vertical Scrollbar
         self.vsb.configure(command=self.custom_treeview.yview)
 
-        # Packing Particulars Treeview
-        self.custom_treeview.pack(fill=BOTH, expand=1)
+        # Right-Click Menu
+        self.treeview_menu = tk.Menu(self.custom_treeview, tearoff=0)
+        self.treeview_menu.add_command(label="Edit")
+        self.treeview_menu.add_command(label="Delete")
 
-        self.conn = sqlite3.connect("C:\\Users\\Digvijay\\Desktop\\Techware Billing System\\DB\\Items.db")
-        self.cursor = self.conn.cursor()
-        self.cursor.execute("SELECT * FROM ITEMS")
-        self.rows = self.cursor.fetchall()
-        for row in self.rows:
-            # Getting The Last Row Of Particulars Treeview
-            last_row = len(self.custom_treeview.get_children()) + 1
-            print(last_row)
-            # Creating Table In Database
-            sql = '''CREATE TABLE IF NOT EXISTS ITEMS(
-                      0 id  INTEGER PRIMARY KEY,
-                      1 Category VARCHAR(50) NOT NULL,
-                      2 Sub_Category VARCHAR(50) NOT NULL,
-                      3 Item_Code VARCHAR(500) NOT NULL,
-                      4 Item_Name VARCHAR(500) NOT NULL,
-                      5 Item_Rate INTEGER NOT NULL,
-                      6 Item_Qty INTEGER NOT NULL)'''
+        self.custom_treeview.bind("<ButtonRelease-3>", self.select_item)
 
-            # IF ELSE Statement For Getting Last Row And Inserting It To Particulars Treeview
-            if last_row != 0:
-                if last_row % 2 == 0:
-                    self.custom_treeview.insert('', END,
-                                                values=(
-                                                    last_row, row[4], row[5], row[6], row[3], row[2], row[1]),
-                                                tags=('evenrow',))
-                else:
-                    self.custom_treeview.insert('', END,
-                                                values=(
-                                                    last_row, row[4], row[5], row[6], row[3], row[2], row[1]),
-                                                tags=('oddrow',))
-            else:
-                self.custom_treeview.insert('', END,
-                                            values=(
-                                                1, row[4], row[5], row[6], row[3], row[2], row[1]),
-                                            tags=('oddrow',))
+    def select_item(self, event):
+        """
+        It Checks If An Item Is Selected or Not If Selected then it Shows Menu.
+
+        :param event:
+        """
+        print("Clicked")
+        self.cursor_row = self.custom_treeview.focus()
+        self.contents = self.custom_treeview.item(self.cursor_row)
+        print(self.contents)
+        if self.contents == []:
+            return
+        else:
+            try:
+                self.treeview_menu.tk_popup(event.x_root, event.y_root)
+            finally:
+                self.treeview_menu.grab_release()
+
+    def place(self, **kwargs):
+        self.custom_treeview.place(**kwargs)
+
+    def pack(self, **kwargs):
+        self.custom_treeview.pack(**kwargs)
+
+    def grid(self, **kwargs):
+        self.custom_treeview.grid(**kwargs)
 
 
-root = tk.Tk()
-obj = Custom_treeview(master=root, column_name=["No.", "Name", "Rate", "Quantity",
-                                                "Discount", "Item Code", "Sub-Category", "Category"], column_width=150)
-root.mainloop()
+# root = tk.Tk()
+# obj = Custom_treeview(master=root, column_name=["No.", "Name", "Rate", "Quantity",
+#                                                 "Discount", "Item Code", "Sub-Category", "Category"], column_width=150)
+# root.mainloop()
