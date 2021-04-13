@@ -145,7 +145,7 @@ class Home:
         self.sale['activeforeground'] = "white"
         # Add some commands
         self.sale.menu.add_command(label="New Invoice", command=self.new_invoice_btn, font=("Calibri", 13))
-        self.sale.menu.add_command(label="Search and Manage Invoices", font=("Calibri", 13))
+        self.sale.menu.add_command(label="Search and Manage Invoices", font=("Calibri", 13), command=self.manage_invoices())
         self.sale.menu.add_separator()
         self.sale.menu.add_command(label="New Delivery", font=("Calibri", 13))
         self.sale.menu.add_command(label="Search and Manage Deliveries", font=("Calibri", 13))
@@ -2338,6 +2338,9 @@ class Home:
 
         self.conn.commit()
         self.conn.close()
+
+    def manage_invoices(self):
+        pass
 
 
 root = Tk()
