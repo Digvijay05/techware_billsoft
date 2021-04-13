@@ -105,7 +105,47 @@ class Custom_treeview(Treeview):
     def grid(self, **kwargs):
         self.custom_treeview.grid(**kwargs)
 
+
+class Link_Text:
+    def __init__(self, root, **kwargs):
+        self.link_root = root
+
+        self.style = Style(self.link_root)
+        # Loading TTK Themes
+        self.link_root.tk.eval("""
+                                set base_theme_dir C:/Users/Digvijay/Downloads/awthemes-10.2.0/awthemes-10.2.0
+
+                                package ifneeded awthemes 10.2.0 \
+                                    [list source [file join $base_theme_dir awthemes.tcl]]
+                                package ifneeded colorutils 4.8 \
+                                    [list source [file join $base_theme_dir colorutils.tcl]]
+                                package ifneeded awdark 7.7 \
+                                    [list source [file join $base_theme_dir awdark.tcl]]
+                                package ifneeded awlight 7.9 \
+                                    [list source [file join $base_theme_dir awlight.tcl]]
+                                package ifneeded awbreeze 7.9 \
+                                    [list source [file join $base_theme_dir awbreeze.tcl]]
+                                """)
+
+        # Load The Awdark And Awlight Themes
+        self.link_root.tk.call("package", "require", 'awthemes')
+        self.link_root.tk.call("package", "require", 'awlight')
+        # self.root.tk.call("package", "require", 'awbreeze')
+
+        # Using Theme AWLIGHT
+        self.style.theme_use('awlight')
+
+        self.style.configure("S.TLabel", background="white", font=("Calibri", 10, "underline"))
+
+        self.style.map("S.TLabel",
+                       foreground=[("!active", "blue"), ("active", "lightblue"), ("pressed", "darkblue")]
+                       )
+
+        self.link_lbl = Label(self.link_root, text=kwargs["link_text"], style="S.TLabel", relief=FLAT)
+        self.link_lbl.bind("<ButtonRelease-1>", kwargs["link_function"])
+
+
 # root = tk.Tk()
-# obj = Custom_treeview(master=root, column_name=["No.", "Name", "Rate", "Quantity",
-#                                                 "Discount", "Item Code", "Sub-Category", "Category"], column_width=150)
+# obj = Link_Text(root, link_text="Link", link_function="nothing")
+# obj.link_lbl.pack(fill=BOTH, expand=1)
 # root.mainloop()
