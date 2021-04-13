@@ -62,7 +62,7 @@ class Invoice:
         # Load The Awdark And Awlight Themes
         self.invoice_root.tk.call("package", "require", 'awthemes')
         self.invoice_root.tk.call("package", "require", 'awlight')
-        # self.root.tk.call("package", "require", 'awbreeze')
+        # self.invoice_root.tk.call("package", "require", 'awbreeze')
 
         # Using Theme AWLIGHT
         self.style.theme_use('awlight')
@@ -83,6 +83,15 @@ class Invoice:
                        foreground=[('!active', 'white'), ('pressed', 'white'), ('active', 'white')],
                        background=[('!active', '#00bd61'), ('pressed', '#00e375'), ('active', '#00d16c')]
                        )
+
+        # Radiobutton style configure
+        self.style.configure("S.TRadiobutton", font=("Calibri", 12), bg="white")
+
+        # Radiobutton style map
+        self.style.map("S.TRadiobutton",
+                       background=[("!active", "white"), ("active", "lightgray"), ("pressed", "white"), ],
+                       foreground=[("!active", "black"), ("active", "black"), ("pressed", "black"), ],
+                       highlight_background=[("!active","yellow"),("active","green"),("pressed","blue"),])
 
         # CheckButton Style
         self.style.configure('Red.TCheckbutton', font=("Calibri", 12), takefocus=False, background="white",
@@ -201,22 +210,22 @@ class Invoice:
 
         # Bill To Label
         self.bill_to_lbl = Label(self.invoice_information_lbl, text="Bill To", font=("Calibri", 10), bg="white")
-        self.bill_to_lbl.place(relx=0.87, rely=0)
+        self.bill_to_lbl.place(relx=0.805, rely=0)
 
         # Client A/c / Cash A/c
         self.bill_to_var = StringVar()
         self.bill_to_var.set("client")
 
         # Client A/c RadioButton
-        self.client_ac_radio = Radiobutton(self.invoice_information_lbl, text="Client A/c",
-                                           font=("Calibri", 12), bg="white", value="client",
-                                           variable=self.bill_to_var)
+        self.client_ac_radio = ttk.Radiobutton(self.invoice_information_lbl, text="Client A/c", value="client",
+                                               style="S.TRadiobutton",
+                                               variable=self.bill_to_var)
         self.client_ac_radio.place(relx=0.805, rely=0.2)
 
         # Cash A/c RadioButton
-        self.cash_ac_radio = Radiobutton(self.invoice_information_lbl, text="Cash A/c",
-                                         font=("Calibri", 12), bg="white", value="cash",
-                                         variable=self.bill_to_var)
+        self.cash_ac_radio = ttk.Radiobutton(self.invoice_information_lbl, text="Cash A/c", value="cash",
+                                             style="S.TRadiobutton",
+                                             variable=self.bill_to_var)
         self.cash_ac_radio.place(relx=0.89, rely=0.2)
 
         # Contact Label
@@ -319,28 +328,28 @@ class Invoice:
         self.bar_code_radio = Radiobutton(self.particulars_lbl, text="Bar Code",
                                           font=("Calibri", 12), bg="white", value="bar code",
                                           variable=self.bar_var)
-        self.bar_code_radio.place(relx=0, rely=0)
+        self.bar_code_radio.place(relx=0.005, rely=0.05)
 
         # QR Code RadioButton
         self.item_code_radio = Radiobutton(self.particulars_lbl, text="Item Code",
                                            font=("Calibri", 12), bg="white", value="qr code",
                                            variable=self.bar_var)
-        self.item_code_radio.place(relx=0.075, rely=0)
+        self.item_code_radio.place(relx=0.080, rely=0.05)
 
         # Bar Code Variable
         self.item_code_var = StringVar()
 
         # Bar Code Entry
         self.item_code_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_code_var)
-        self.item_code_txt.place(relx=0, rely=0.1, relwidth=0.13)
+        self.item_code_txt.place(relx=0.005, rely=0.2, relwidth=0.155)
 
         # Item Name Label
         self.item_name_lbl = Label(self.particulars_lbl, text="Item Name *", font=("Calibri", 10), bg="white")
-        self.item_name_lbl.place(relx=0.150, rely=0)
+        self.item_name_lbl.place(relx=0.165, rely=0)
 
         # Item Name Entry
         self.item_name_txt = AutocompleteCombobox(self.particulars_lbl, font=("Calibri", 12))
-        self.item_name_txt.place(relx=0.150, rely=0.05, relwidth=0.2)
+        self.item_name_txt.place(relx=0.165, rely=0.05, relwidth=0.17)
 
         self.conn = sqlite3.connect("DB\\Items.db")
         self.cursor = self.conn.cursor()
@@ -361,11 +370,11 @@ class Invoice:
 
         # Item Units Label
         self.item_units_lbl = Label(self.particulars_lbl, text="Unit *", font=("Calibri", 10), bg="white")
-        self.item_units_lbl.place(relx=0.420, rely=0)
+        self.item_units_lbl.place(relx=0.340, rely=0)
 
         # Item Units Entry
         self.item_units_txt = AutocompleteCombobox(self.particulars_lbl, font=("Calibri", 12))
-        self.item_units_txt.place(relx=0.420, rely=0.05, relwidth=0.04)
+        self.item_units_txt.place(relx=0.340, rely=0.05, relwidth=0.08)
 
         self.units = []
 
@@ -393,44 +402,36 @@ class Invoice:
 
         self.item_name_txt.config(completevalues=self.units_names)
 
-        # Item Rate Label
-        self.item_rate_lbl = Label(self.particulars_lbl, text="Item Rate *", font=("Calibri", 10), bg="white")
-        self.item_rate_lbl.place(relx=0.490, rely=0)
-
-        # Item Rate Variable
-        self.item_rate_var = StringVar()
-
-        # Item Rate Entry
-        self.item_rate_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_rate_var)
-        self.item_rate_txt.place(relx=0.490, rely=0.05, relwidth=0.06)
-
         # Item Quantity Label
-        self.item_qty_lbl = Label(self.particulars_lbl, text="Item Quantity", font=("Calibri", 10), bg="white")
-        self.item_qty_lbl.place(relx=0.560, rely=0)
+        self.item_qty_lbl = Label(self.particulars_lbl, text="Item Quantity *", font=("Calibri", 10), bg="white")
+        self.item_qty_lbl.place(relx=0.425, rely=0)
 
         # Item Quantity Variable
         self.item_qty_var = StringVar()
 
         # Item Quantity Entry
         self.item_qty_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_qty_var)
-        self.item_qty_txt.place(relx=0.560, rely=0.05, relwidth=0.06)
+        self.item_qty_txt.place(relx=0.425, rely=0.05, relwidth=0.08)
 
-        # Discount Label
-        self.discount_lbl = Label(self.particulars_lbl, text="Discount", font=("Calibri", 10), bg="white")
-        self.discount_lbl.place(relx=0.630, rely=0)
+        # Item Rate Label
+        self.item_rate_lbl = Label(self.particulars_lbl, text="Item Rate *", font=("Calibri", 10), bg="white")
+        self.item_rate_lbl.place(relx=0.510, rely=0)
 
-        # Discount Entry
-        self.discount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
-        self.discount_txt.place(relx=0.630, rely=0.05, relwidth=0.06)
+        # Item Rate Variable
+        self.item_rate_var = StringVar()
+
+        # Item Rate Entry
+        self.item_rate_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_rate_var)
+        self.item_rate_txt.place(relx=0.510, rely=0.05, relwidth=0.08)
 
         # Category Label
         self.category_lbl = Label(self.particulars_lbl, text="Category *", font=("Calibri", 10), bg="white")
-        self.category_lbl.place(relx=0.700, rely=0)
+        self.category_lbl.place(relx=0.595, rely=0)
 
         # Category ComboBox
         self.category_txt = ttk.Combobox(self.particulars_lbl, font=("Calibri", 12), values=["Select"],
                                          state='readonly')
-        self.category_txt.place(relx=0.700, rely=0.05, relwidth=0.06)
+        self.category_txt.place(relx=0.595, rely=0.05, relwidth=0.06)
         self.category_txt.current(0)
 
         # Connecting To Database
@@ -472,20 +473,60 @@ class Invoice:
 
         # Sub-Category Label
         self.sub_category_lbl = Label(self.particulars_lbl, text="Sub-Category", font=("Calibri", 10), bg="white")
-        self.sub_category_lbl.place(relx=0.770, rely=0)
+        self.sub_category_lbl.place(relx=0.660, rely=0)
 
         # Sub-Category ComboBox
         self.sub_category_txt = ttk.Combobox(self.particulars_lbl, font=("Calibri", 12), values=["Select"])
-        self.sub_category_txt.place(relx=0.770, rely=0.05, relwidth=0.06)
+        self.sub_category_txt.place(relx=0.660, rely=0.05, relwidth=0.06)
         self.sub_category_txt.current(0)
 
-        '''# Item Code Label
-        self.item_code_lbl = Label(self.particulars_lbl, text="Item Code", font=("Calibri", 10), bg="white")
-        self.item_code_lbl.place(relx=0.600, rely=0)
+        # Discount Label
+        self.discount_lbl = Label(self.particulars_lbl, text="Discount (%)", font=("Calibri", 10), bg="white")
+        self.discount_lbl.place(relx=0.725, rely=0)
 
-        # Item Code Entry
-        self.item_code_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
-        self.item_code_txt.place(relx=0.600, rely=0.05, relwidth=0.1)'''
+        # Discount Entry
+        self.discount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.discount_txt.place(relx=0.725, rely=0.05, relwidth=0.06)
+
+        # Tax Label
+        self.tax_lbl = Label(self.particulars_lbl, text="Tax (%)", font=("Calibri", 10), bg="white")
+        self.tax_lbl.place(relx=0.790, rely=0)
+
+        # Tax Entry
+        self.tax_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.tax_txt.place(relx=0.790, rely=0.05, relwidth=0.05)
+
+        # CESS Label
+        self.cess_lbl = Label(self.particulars_lbl, text="CESS (%)", font=("Calibri", 10), bg="white")
+        self.cess_lbl.place(relx=0.845, rely=0)
+
+        # CESS Entry
+        self.cess_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.cess_txt.place(relx=0.845, rely=0.05, relwidth=0.05)
+
+        # Amount Label
+        self.amount_lbl = Label(self.particulars_lbl, text="Amount", font=("Calibri", 10), bg="white")
+        self.amount_lbl.place(relx=0.900, rely=0)
+
+        # Amount Entry
+        self.amount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.amount_txt.place(relx=0.900, rely=0.05, relwidth=0.05)
+
+        # Description Label
+        self.description_lbl = Label(self.particulars_lbl, text="Description", font=("Calibri", 10), bg="white")
+        self.description_lbl.place(relx=0.165, rely=0.13)
+
+        # Description Entry
+        self.description_txt = scrolledtext.ScrolledText(self.particulars_lbl, font=("Calibri", 12))
+        self.description_txt.place(relx=0.165, rely=0.18, relwidth=0.675, relheight=0.1)
+
+        # Serial number Label
+        self.serial_number_lbl = Label(self.particulars_lbl, text="Serial Number", font=("Calibri", 10), bg="white")
+        self.serial_number_lbl.place(relx=0.845, rely=0.15)
+
+        # Serial number Entry
+        self.serial_number_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.serial_number_txt.place(relx=0.845, rely=0.20, relwidth=0.105)
 
         # Add Particulars Image
         self.add_particular_image = PhotoImage(file="Images\\Add_Button.png")
@@ -494,19 +535,11 @@ class Invoice:
         self.add_particular_btn = ttk.Button(self.particulars_lbl, image=self.add_particular_image,
                                              style="S.TButton",
                                              command=self.add_particular_func)
-        self.add_particular_btn.place(relx=0.95, rely=0.2)
-
-        # Description Label
-        self.description_lbl = Label(self.particulars_lbl, text="Description", font=("Calibri", 10), bg="white")
-        self.description_lbl.place(relx=0, rely=0.4)
-
-        # Description Entry
-        self.description_txt = scrolledtext.ScrolledText(self.particulars_lbl, font=("Calibri", 12))
-        self.description_txt.place(relx=0, rely=0.45, relwidth=1, relheight=0.1)
+        self.add_particular_btn.place(relx=0.965, rely=0.1)
 
         # Particulars Treeview Frame
         self.particulars_treeview_frame = Frame(self.particulars_lbl)
-        self.particulars_treeview_frame.place(relx=0, rely=0.6, relwidth=1, relheight=0.6)
+        self.particulars_treeview_frame.place(relx=0, rely=0.3, relwidth=1, relheight=0.7)
 
         # Particulars Treeview
         self.particulars_treeview = Custom_treeview(master=self.particulars_treeview_frame, edit_command=self.edit_item,
@@ -542,6 +575,8 @@ class Invoice:
                                              state='readonly', style="TCombobox")
         self.payment_mode_txt.current(0)
         self.payment_mode_txt.place(relx=0.3, rely=0.2, relwidth=0.6)
+
+        self.payment_mode_txt.bind("<<ComboboxSelected>>", self.update_payment_info_event)
 
         # Txn. Id Label
         self.txn_id_lbl = Label(self.payment_lbl, text="Txn. Id", bg="white", font=("Calibri", 11))
@@ -676,6 +711,15 @@ class Invoice:
         self.save_print_btn = ttk.Button(self.invoice_root, text="Save & Print", style="S.TButton",
                                          command=self.print_operation)
         self.save_print_btn.place(relx=0.9, rely=0.88)
+
+    def update_payment_info_event(self, event):
+        if self.payment_mode_txt.get() == "Cheque" or self.payment_mode_txt.get() == "Card" or \
+                self.payment_mode_txt.get() == "Mobile Wallet" or self.payment_mode_txt.get() == "Bank Transfer":
+            print("ENABLED")
+            self.txn_id_txt.config(state=NORMAL)
+        else:
+            print("DISABLED")
+            self.txn_id_txt.config(state=DISABLED)
 
     def edit_item(self):
         self.edit_window = Toplevel()
@@ -1455,10 +1499,14 @@ class Invoice:
 # Testing Invoice Class
 # Root Window
 root = Tk()
+
+
 def get_location(event):
     x = root.winfo_rootx()
     y = root.winfo_rooty()
-    return print("X:- "+str(x)+" Y:- "+str(y))
+    return print("X:- " + str(x) + " Y:- " + str(y))
+
+
 # Invoice Class
 obj = Invoice(root)
 root.bind("<ButtonRelease-3>", get_location)
