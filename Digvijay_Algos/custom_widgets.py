@@ -9,7 +9,7 @@ class Custom_treeview(Treeview):
     This ttk Treeview is made custom for Any Software
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, edit_command=None, delete_command=None, *args, **kwargs):
         self.treeview_root = kwargs["master"]
 
         self.style = Style(self.treeview_root)
@@ -79,10 +79,10 @@ class Custom_treeview(Treeview):
 
         # Right-Click Menu
         self.treeview_menu = tk.Menu(self.custom_treeview, tearoff=0)
-        self.treeview_menu.add_command(label="Edit")
-        self.treeview_menu.add_command(label="Delete")
+        self.treeview_menu.add_command(label="Edit", command=edit_command)
+        self.treeview_menu.add_command(label="Delete", command=delete_command)
 
-        self.custom_treeview.bind("<ButtonRelease-3>", self.select_item)
+        self.custom_treeview.bind("<<TreeviewSelect>>" and "<ButtonRelease-3>", self.select_item)
 
     def select_item(self, event):
         """
@@ -90,17 +90,11 @@ class Custom_treeview(Treeview):
 
         :param event:
         """
-        print("Clicked")
         self.cursor_row = self.custom_treeview.focus()
         self.contents = self.custom_treeview.item(self.cursor_row)
-        print(self.contents)
-        if self.contents == []:
-            return
-        else:
-            try:
-                self.treeview_menu.tk_popup(event.x_root, event.y_root)
-            finally:
-                self.treeview_menu.grab_release()
+        if ('values', '') not in self.contents.items():
+            self.treeview_menu.tk_popup(event.x_root, event.y_root)
+            self.treeview_menu.grab_release()
 
     def place(self, **kwargs):
         self.custom_treeview.place(**kwargs)
@@ -110,7 +104,6 @@ class Custom_treeview(Treeview):
 
     def grid(self, **kwargs):
         self.custom_treeview.grid(**kwargs)
-
 
 # root = tk.Tk()
 # obj = Custom_treeview(master=root, column_name=["No.", "Name", "Rate", "Quantity",

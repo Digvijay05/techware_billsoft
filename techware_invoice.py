@@ -427,7 +427,8 @@ class Invoice:
         self.particulars_treeview_frame.place(relx=0, rely=0.6, relwidth=1, relheight=0.6)
 
         # Particulars Treeview
-        self.particulars_treeview = Custom_treeview(master=self.particulars_treeview_frame,
+        self.particulars_treeview = Custom_treeview(master=self.particulars_treeview_frame, edit_command=self.edit_item,
+                                                    delete_command=self.delete_item,
                                                     column_name=[
                                                         "No.", "Name", "Rate",
                                                         "Quantity", "Item Code", "Sub-Category", "Category"],
@@ -593,6 +594,12 @@ class Invoice:
         self.save_print_btn = ttk.Button(self.invoice_root, text="Save & Print", style="S.TButton",
                                          command=self.print_operation)
         self.save_print_btn.place(relx=0.9, rely=0.88)
+
+    def edit_item(self):
+        print("edit pressed")
+
+    def delete_item(self):
+        print("delete pressed")
 
     # Adding Items Info
     def item_info_add(self, event):
@@ -1181,7 +1188,7 @@ class Invoice:
 
     # Adding Particulars To Particulars Treeview
     def add_particular_func(self):
-        if self.category_txt.get() == "Select" or self.item_name_txt.get() == "" or self.item_rate_txt.get() == "" or\
+        if self.category_txt.get() == "Select" or self.item_name_txt.get() == "" or self.item_rate_txt.get() == "" or \
                 self.item_units_txt.get() == "":
             tmsg.showerror("Error", "Please Fill All Required Fields.", parent=self.invoice_root)
         else:
@@ -1227,8 +1234,9 @@ class Invoice:
                 self.update_total_price()
             else:
                 self.particulars_treeview.custom_treeview.insert('', END,
-                                                 values=(1, name, rate, qty, item_code, sub_category, category),
-                                                 tags=('oddrow',))
+                                                                 values=(
+                                                                 1, name, rate, qty, item_code, sub_category, category),
+                                                                 tags=('oddrow',))
                 self.update_total_price()
 
     # Item Menu Function
@@ -1384,7 +1392,6 @@ class Invoice:
         self.add_item_btn = ttk.Button(self.item_menu, text="Add Item", compound=LEFT,
                                        cursor="hand2", style="S.TButton", command=self.add_item_to_menu)
         self.add_item_btn.pack(anchor=W)
-
 
     # Adding Items To Particulars Treeview from Item Treeview
     def add_item_to_menu(self):
