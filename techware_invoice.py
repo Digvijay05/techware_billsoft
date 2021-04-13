@@ -7,7 +7,10 @@ from datetime import date, timedelta
 from tkinter import *
 from tkinter import messagebox as tmsg
 from tkinter import ttk, scrolledtext
-from Digvijay_Algos.custom_widgets import Custom_treeview
+
+import ttkwidgets
+
+from Digvijay_Algos.custom_widgets import Custom_treeview, Link_Text
 
 import openpyxl.drawing.image
 import wand
@@ -29,9 +32,12 @@ class Invoice:
         # Root Window
         self.invoice_root = root
         self.invoice_root = root
+        self.invoice_root.attributes('-toolwindow', 1)
+        self.invoice_root.attributes('-topmost', 1)
         w, h = self.invoice_root.winfo_screenwidth(), root.winfo_screenheight()
+
         self.invoice_root.title("Unsaved Invoice")
-        root.geometry("%dx%d+92+12" % (1183, 684))
+        root.geometry("%dx%d+66+16" % (1185, 665))
         self.invoice_root['bg'] = "white"
 
         # Style Of TTK
@@ -96,7 +102,7 @@ class Invoice:
 
         # Invoice Information Frame
         self.invoice_information_lbl = LabelFrame(self.invoice_root, text="Invoice Information", bg="white")
-        self.invoice_information_lbl.place(relx=0, rely=0, relwidth=1, relheight=0.15)
+        self.invoice_information_lbl.place(relx=0.005, rely=0, relwidth=0.99, relheight=0.20)
 
         # Variable for Contact No.
         self.contact_no_var = StringVar()
@@ -107,13 +113,13 @@ class Invoice:
         # Invoice Type Label
         self.invoice_type_lbl = Label(self.invoice_information_lbl, text="Invoice Type *", font=("Calibri", 10),
                                       bg="white")
-        self.invoice_type_lbl.place(relx=0, rely=0)
+        self.invoice_type_lbl.place(relx=0.025, rely=0)
 
         # Invoice Type ComboBox
         self.invoice_type_txt = ttk.Combobox(self.invoice_information_lbl, font=("Calibri", 12),
                                              values=["Select", "GST",
                                                      "Non-GST", "Bill of Supply"])
-        self.invoice_type_txt.place(relx=0, rely=0.2, relwidth=0.1)
+        self.invoice_type_txt.place(relx=0.025, rely=0.2, relwidth=0.17)
         self.invoice_type_txt.current(0)
 
         # Invoice No. Variable
@@ -121,12 +127,12 @@ class Invoice:
 
         # Invoice No. Label
         self.invoice_no_lbl = Label(self.invoice_information_lbl, text="Invoice-No.", font=("Calibri", 10), bg="white")
-        self.invoice_no_lbl.place(relx=0.125, rely=0)
+        self.invoice_no_lbl.place(relx=0.22, rely=0)
 
         # Invoice No. Entry
         self.invoice_no_txt = ttk.Entry(self.invoice_information_lbl, font=("Calibri", 12),
                                         textvariable=self.invoice_no_var)
-        self.invoice_no_txt.place(relx=0.125, rely=0.2, relwidth=0.1)
+        self.invoice_no_txt.place(relx=0.22, rely=0.2, relwidth=0.17)
 
         # Adding Invoice No. Dynamically
         self.conn = sqlite3.connect("DB\\Business.db")
@@ -139,60 +145,103 @@ class Invoice:
 
         # Date Label
         self.invoice_date_lbl = Label(self.invoice_information_lbl, text="Date", font=("Calibri", 10), bg="white")
-        self.invoice_date_lbl.place(relx=0.250, rely=0)
+        self.invoice_date_lbl.place(relx=0.415, rely=0)
 
         # Date Entry
         self.invoice_date_txt = DateEntry(self.invoice_information_lbl, font=("Calibri", 12))
-        self.invoice_date_txt.place(relx=0.250, rely=0.2, relwidth=0.1)
+        self.invoice_date_txt.place(relx=0.415, rely=0.2, relwidth=0.17)
 
-        # Sold By Label
-        self.sold_by_lbl = Label(self.invoice_information_lbl, text="Sold By", font=("Calibri", 10), bg="white")
-        self.sold_by_lbl.place(relx=0.375, rely=0)
+        # Place Of Supply Label
+        self.invoice_place_of_supply_lbl = Label(self.invoice_information_lbl, text="Place of Supply",
+                                                 font=("Calibri", 10), bg="white")
+        self.invoice_place_of_supply_lbl.place(relx=0.61, rely=0)
 
-        # Sold By ComboBox
-        self.sold_by_txt = ttk.Combobox(self.invoice_information_lbl, font=("Calibri", 12), values=["Select"],
-                                        state='readonly')
-        self.sold_by_txt.place(relx=0.375, rely=0.2, relwidth=0.1)
-        self.sold_by_txt.current(0)
+        # Place Of Supply Combobox
+        self.invoice_place_of_supply_txt = AutocompleteCombobox(
+            self.invoice_information_lbl,
+            completevalues=["Select",
+                            "Andaman and Nicobar",
+                            "Andhra Pradesh",
+                            "Arunachal Pradesh",
+                            "Assam",
+                            "Bihar",
+                            "Chandigarh",
+                            "Chhattisgarh",
+                            "Dadra and Nagar Haveli",
+                            "Daman and Diu",
+                            "Delhi",
+                            "Goa",
+                            "Gujarat",
+                            "Haryana",
+                            "Himachal Pradesh",
+                            "Jammu & Kashmir",
+                            "Jharkhand",
+                            "Karnataka",
+                            "Kerala",
+                            "Lakshadweep",
+                            "Madhya Pradesh",
+                            "Maharashtra",
+                            "Manipur",
+                            "Meghalaya",
+                            "Mizoram",
+                            "Nagaland",
+                            "Odisha",
+                            "Puducherry",
+                            "Punjab",
+                            "Rajashthan",
+                            "Sikkim",
+                            "Tamil Nadu",
+                            "Telangana",
+                            "Tripura",
+                            "Uttar Pradesh",
+                            "Uttarakhand",
+                            "West Bengal"], font=("Calibri", 12))
+        self.invoice_place_of_supply_txt.current(29)
+        self.invoice_place_of_supply_txt.place(relx=0.61, rely=0.2, relwidth=0.17)
 
-        self.staff_list = ["Select", ]
+        # Bill To Label
+        self.bill_to_lbl = Label(self.invoice_information_lbl, text="Bill To", font=("Calibri", 10), bg="white")
+        self.bill_to_lbl.place(relx=0.87, rely=0)
 
-        self.conn = sqlite3.connect("DB\\Employee.db")
-        self.cursor = self.conn.cursor()
-        self.cursor.execute("SELECT * FROM STAFF")
-        self.rows = self.cursor.fetchall()
+        # Client A/c / Cash A/c
+        self.bill_to_var = StringVar()
+        self.bill_to_var.set("client")
 
-        for i in range(0, int(len(self.rows))):
-            self.staff_name = self.rows[i][6]
-            self.staff_list.append(self.staff_name)
+        # Client A/c RadioButton
+        self.client_ac_radio = Radiobutton(self.invoice_information_lbl, text="Client A/c",
+                                           font=("Calibri", 12), bg="white", value="client",
+                                           variable=self.bill_to_var)
+        self.client_ac_radio.place(relx=0.805, rely=0.2)
 
-        self.sold_by_txt.config(values=self.staff_list)
-        self.sold_by_txt.current(0)
+        # Cash A/c RadioButton
+        self.cash_ac_radio = Radiobutton(self.invoice_information_lbl, text="Cash A/c",
+                                         font=("Calibri", 12), bg="white", value="cash",
+                                         variable=self.bill_to_var)
+        self.cash_ac_radio.place(relx=0.89, rely=0.2)
 
         # Contact Label
         self.contact_no_lbl = Label(self.invoice_information_lbl, text="Contact *", font=("Calibri", 10), bg="white")
-        self.contact_no_lbl.place(relx=0, rely=0.5)
+        self.contact_no_lbl.place(relx=0.025, rely=0.5)
 
         # Contact Entry
         self.contact_no_txt = ttk.Entry(self.invoice_information_lbl, font=("Calibri", 12),
                                         textvariable=self.contact_no_var)
-        self.contact_no_txt.place(relx=0, rely=0.7, relwidth=0.1)
+        self.contact_no_txt.place(relx=0.025, rely=0.7, relwidth=0.17)
 
         # # Retail Options Label
-        # self.retail_options_lbl = Label(self.invoice_information_lbl, text="Retail", font=("Calibri", 10, "underline"),
-        #                                 fg='darkblue', bg="white")
-        # self.retail_options_lbl.place(relx=0.125, rely=0.5)
-        # self.retail_options_lbl.bind("<ButtonRelease-1>", self.retail_options)
+        self.retail_options_lbl = Link_Text(self.invoice_information_lbl, link_text="Retail",
+                                            link_function=self.retail_options)
+        self.retail_options_lbl.link_lbl.place(relx=0.22, rely=0.5)
 
         # Client Name Label
         self.client_name_lbl = Label(self.invoice_information_lbl, text="Client Name *", font=("Calibri", 10),
                                      bg="white")
-        self.client_name_lbl.place(relx=0.150, rely=0.5)
+        self.client_name_lbl.place(relx=0.32, rely=0.5)
 
         # Client Name Entry
         self.client_name_txt = AutocompleteCombobox(self.invoice_information_lbl, completevalues=["Select"],
                                                     font=("Calibri", 12))
-        self.client_name_txt.place(relx=0.125, rely=0.7, relwidth=0.1)
+        self.client_name_txt.place(relx=0.22, rely=0.7, relwidth=0.17)
 
         self.conn = sqlite3.connect("DB\\Clients.db")
         self.cursor = self.conn.cursor()
@@ -212,18 +261,55 @@ class Invoice:
         self.client_name_txt.bind("<<ComboboxSelected>>", self.client_info_add)
 
         # Client Address Label
-        self.client_address_lbl = Label(self.invoice_information_lbl, text="Client Address *", font=("Calibri", 10),
+        self.client_address_lbl = Label(self.invoice_information_lbl, text="Client Address", font=("Calibri", 10),
                                         bg="white")
-        self.client_address_lbl.place(relx=0.250, rely=0.5)
+        self.client_address_lbl.place(relx=0.415, rely=0.5)
 
         # Client Address Entry
         self.client_address_txt = ttk.Entry(self.invoice_information_lbl, font=("Calibri", 12),
                                             textvariable=self.contact_address_var)
-        self.client_address_txt.place(relx=0.250, rely=0.7, relwidth=0.1)
+        self.client_address_txt.place(relx=0.415, rely=0.7, relwidth=0.17)
+
+        # Client GSTIN Variable
+        self.client_gstin_var = StringVar()
+
+        # Client GSTIN Label
+        self.client_gstin_lbl = Label(self.invoice_information_lbl, text="Client GSTIN", font=("Calibri", 10),
+                                      bg="white")
+        self.client_gstin_lbl.place(relx=0.61, rely=0.5)
+
+        # Client GSTIN Entry
+        self.client_gstin_txt = ttk.Entry(self.invoice_information_lbl, font=("Calibri", 12),
+                                          textvariable=self.client_gstin_var)
+        self.client_gstin_txt.place(relx=0.61, rely=0.7, relwidth=0.17)
+
+        # Sold By Label
+        self.sold_by_lbl = Label(self.invoice_information_lbl, text="Sold By", font=("Calibri", 10), bg="white")
+        self.sold_by_lbl.place(relx=0.805, rely=0.5)
+
+        # Sold By ComboBox
+        self.sold_by_txt = ttk.Combobox(self.invoice_information_lbl, font=("Calibri", 12), values=["Select"],
+                                        state='readonly')
+        self.sold_by_txt.place(relx=0.805, rely=0.7, relwidth=0.17)
+        self.sold_by_txt.current(0)
+
+        self.staff_list = ["Select", ]
+
+        self.conn = sqlite3.connect("DB\\Employee.db")
+        self.cursor = self.conn.cursor()
+        self.cursor.execute("SELECT * FROM STAFF")
+        self.rows = self.cursor.fetchall()
+
+        for i in range(0, int(len(self.rows))):
+            self.staff_name = self.rows[i][6]
+            self.staff_list.append(self.staff_name)
+
+        self.sold_by_txt.config(values=self.staff_list)
+        self.sold_by_txt.current(0)
 
         # Particulars Frame
         self.particulars_lbl = LabelFrame(self.invoice_root, text="Particulars", bg="white")
-        self.particulars_lbl.place(relx=0, rely=0.15, relwidth=1, relheight=0.51)
+        self.particulars_lbl.place(relx=0.005, rely=0.22, relwidth=0.99, relheight=0.51)
 
         # Bar Code / QR Code
         self.bar_var = StringVar()
@@ -236,10 +322,10 @@ class Invoice:
         self.bar_code_radio.place(relx=0, rely=0)
 
         # QR Code RadioButton
-        self.bar_code_radio = Radiobutton(self.particulars_lbl, text="QR Code",
-                                          font=("Calibri", 12), bg="white", value="qr code",
-                                          variable=self.bar_var)
-        self.bar_code_radio.place(relx=0.065, rely=0)
+        self.item_code_radio = Radiobutton(self.particulars_lbl, text="Item Code",
+                                           font=("Calibri", 12), bg="white", value="qr code",
+                                           variable=self.bar_var)
+        self.item_code_radio.place(relx=0.075, rely=0)
 
         # Bar Code Variable
         self.item_code_var = StringVar()
@@ -405,14 +491,10 @@ class Invoice:
         self.add_particular_image = PhotoImage(file="Images\\Add_Button.png")
 
         # Add Particulars Button
-        self.add_particular_btn = ttk.Button(self.particulars_lbl, image=self.add_particular_image, style="S.TButton",
+        self.add_particular_btn = ttk.Button(self.particulars_lbl, image=self.add_particular_image,
+                                             style="S.TButton",
                                              command=self.add_particular_func)
         self.add_particular_btn.place(relx=0.95, rely=0.2)
-
-        '''# List Particulars Button
-        self.list_particular_btn = ttk.Button(self.particulars_lbl, text="List", style="S.TButton",
-                                              command=self.select_from_menu)
-        self.list_particular_btn.place(relx=0.95, rely=0.2)'''
 
         # Description Label
         self.description_lbl = Label(self.particulars_lbl, text="Description", font=("Calibri", 10), bg="white")
@@ -437,22 +519,22 @@ class Invoice:
 
         # Payment Frame
         self.payment_lbl = LabelFrame(self.invoice_root, text="Payment", bg="white")
-        self.payment_lbl.place(relx=0.55, rely=0.66, relwidth=0.22, relheight=0.33)
+        self.payment_lbl.place(relx=0.55, rely=0.66, relwidth=0.18, relheight=0.28)
 
         # Payment Date Label
-        self.payment_date_lbl = Label(self.payment_lbl, text="Date", bg="white", font=("Calibri", 12))
+        self.payment_date_lbl = Label(self.payment_lbl, text="Date", bg="white", font=("Calibri", 11))
         self.payment_date_lbl.place(relx=0, rely=0.01)
 
         # Payment Date Entry
-        self.payment_date_txt = DateEntry(self.payment_lbl, font=("Calibri", 12))
+        self.payment_date_txt = DateEntry(self.payment_lbl, font=("Calibri", 11))
         self.payment_date_txt.place(relx=0.3, rely=0.01, relwidth=0.6)
 
         # Payment Mode Label
-        self.payment_mode_lbl = Label(self.payment_lbl, text="Mode", bg="white", font=("Calibri", 12))
+        self.payment_mode_lbl = Label(self.payment_lbl, text="Mode", bg="white", font=("Calibri", 11))
         self.payment_mode_lbl.place(relx=0, rely=0.2)
 
         # Payment Mode ComboBox
-        self.payment_mode_txt = ttk.Combobox(self.payment_lbl, font=("Calibri", 12), values=["Select", "Cash",
+        self.payment_mode_txt = ttk.Combobox(self.payment_lbl, font=("Calibri", 11), values=["Select", "Cash",
                                                                                              "Cheque", "Card",
                                                                                              "Demand Draft",
                                                                                              "Mobile Wallet",
@@ -462,34 +544,34 @@ class Invoice:
         self.payment_mode_txt.place(relx=0.3, rely=0.2, relwidth=0.6)
 
         # Txn. Id Label
-        self.txn_id_lbl = Label(self.payment_lbl, text="Txn. Id", bg="white", font=("Calibri", 12))
+        self.txn_id_lbl = Label(self.payment_lbl, text="Txn. Id", bg="white", font=("Calibri", 11))
         self.txn_id_lbl.place(relx=0, rely=0.4)
 
         # Txn. Id Entry
-        self.txn_id_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 12), state='disabled')
+        self.txn_id_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 11), state='disabled')
         self.txn_id_txt.place(relx=0.3, rely=0.4, relwidth=0.6)
 
         # Payment Amount Label
-        self.payment_amount_lbl = Label(self.payment_lbl, text="Amount", bg="white", font=("Calibri", 12))
+        self.payment_amount_lbl = Label(self.payment_lbl, text="Amount", bg="white", font=("Calibri", 11))
         self.payment_amount_lbl.place(relx=0, rely=0.6)
 
         # Payment Amount Variable
         self.payment_amount_var = StringVar()
 
         # Payment Amount Entry
-        self.payment_amount_txt = ttk.Entry(self.payment_lbl, text="", font=("Calibri", 12),
+        self.payment_amount_txt = ttk.Entry(self.payment_lbl, text="", font=("Calibri", 11),
                                             textvariable=self.payment_amount_var)
         self.payment_amount_txt.place(relx=0.3, rely=0.6, relwidth=0.6)
 
         # Payment Balance Label
-        self.payment_balance_lbl = Label(self.payment_lbl, text="Balance", bg="white", font=("Calibri", 12))
+        self.payment_balance_lbl = Label(self.payment_lbl, text="Balance", bg="white", font=("Calibri", 11))
         self.payment_balance_lbl.place(relx=0, rely=0.8)
 
         # Payment Balance variable
         self.payment_balance_var = StringVar()
 
         # Payment Amount Entry
-        self.payment_balance_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 12), state='disabled',
+        self.payment_balance_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 11), state='disabled',
                                              textvariable=self.payment_balance_var)
         self.payment_balance_txt.place(relx=0.3, rely=0.8, relwidth=0.6)
 
@@ -647,57 +729,57 @@ class Invoice:
         self.payment_balance_var.set(self.client_balance)
 
     # Retail Options Window Function
-    # def retail_options(self, event):
-    #
-    #     # Retail Options Window
-    #     self.retail_options_window = Toplevel()
-    #     self.retail_options_window.overrideredirect(True)
-    #     self.retail_options_window.geometry("500x300+400+200")
-    #
-    #     # Dict for Retail Option Values
-    #     self.retail_options = ["Retail", "Agent", "Wholesale"]
-    #
-    #     # Retail Frame
-    #     self.retail_frame = ttk.Frame(self.retail_options_window, style="Retail.TFrame")
-    #     self.retail_frame.pack(fill=BOTH, side=TOP, anchor=N, expand=1)
-    #
-    #     # Retail Button
-    #     self.retail_lbl = ttk.Button(self.retail_frame, text=self.retail_options[0], command=self.retail_operation
-    #                                  , style="S.TButton")
-    #     self.retail_lbl.pack(fill=BOTH, side=TOP, expand=1)
-    #
-    #     # Agent Frame
-    #     self.agent_frame = ttk.Frame(self.retail_options_window, style="Retail.TFrame")
-    #     self.agent_frame.pack(fill=BOTH, side=TOP, anchor=N, expand=1)
-    #
-    #     # Agent Button
-    #     self.agent_lbl = ttk.Button(self.retail_frame, text=self.retail_options[1], command=self.agent_operation
-    #                                 , style="S.TButton")
-    #     self.agent_lbl.pack(fill=BOTH, side=TOP, expand=1)
-    #
-    #     # Wholesale Frame
-    #     self.wholesale_frame = ttk.Frame(self.retail_options_window, style="Retail.TFrame")
-    #     self.wholesale_frame.pack(fill=BOTH, side=TOP, anchor=N, expand=1)
-    #
-    #     # Wholesale Button
-    #     self.wholesale_lbl = ttk.Button(self.retail_frame, text=self.retail_options[2], command=self.wholesale_operation
-    #                                     , style="S.TButton")
-    #     self.wholesale_lbl.pack(fill=BOTH, side=TOP, expand=1)
+    def retail_options(self, event):
 
-    # # Retail Button Function
-    # def retail_operation(self):
-    #     self.retail_options_lbl.config(text="Retail")
-    #     self.retail_options_window.destroy()
-    #
-    # # Agent Button Function
-    # def agent_operation(self):
-    #     self.retail_options_lbl.config(text="Agent")
-    #     self.retail_options_window.destroy()
-    #
-    # # Wholesale Button Function
-    # def wholesale_operation(self):
-    #     self.retail_options_lbl.config(text="Wholesale")
-    #     self.retail_options_window.destroy()
+        # Retail Options Window
+        self.retail_options_window = Toplevel()
+        self.retail_options_window.overrideredirect(True)
+        self.retail_options_window.geometry("500x300+400+200")
+
+        # Dict for Retail Option Values
+        self.retail_options = ["Retail", "Agent", "Wholesale"]
+
+        # Retail Frame
+        self.retail_frame = ttk.Frame(self.retail_options_window, style="Retail.TFrame")
+        self.retail_frame.pack(fill=BOTH, side=TOP, anchor=N, expand=1)
+
+        # Retail Button
+        self.retail_lbl = ttk.Button(self.retail_frame, text=self.retail_options[0], command=self.retail_operation
+                                     , style="S.TButton")
+        self.retail_lbl.pack(fill=BOTH, side=TOP, expand=1)
+
+        # Agent Frame
+        self.agent_frame = ttk.Frame(self.retail_options_window, style="Retail.TFrame")
+        self.agent_frame.pack(fill=BOTH, side=TOP, anchor=N, expand=1)
+
+        # Agent Button
+        self.agent_lbl = ttk.Button(self.retail_frame, text=self.retail_options[1], command=self.agent_operation
+                                    , style="S.TButton")
+        self.agent_lbl.pack(fill=BOTH, side=TOP, expand=1)
+
+        # Wholesale Frame
+        self.wholesale_frame = ttk.Frame(self.retail_options_window, style="Retail.TFrame")
+        self.wholesale_frame.pack(fill=BOTH, side=TOP, anchor=N, expand=1)
+
+        # Wholesale Button
+        self.wholesale_lbl = ttk.Button(self.retail_frame, text=self.retail_options[2], command=self.wholesale_operation
+                                        , style="S.TButton")
+        self.wholesale_lbl.pack(fill=BOTH, side=TOP, expand=1)
+
+    # Retail Button Function
+    def retail_operation(self):
+        self.retail_options_lbl.link_lbl.config(text="Retail")
+        self.retail_options_window.destroy()
+
+    # Agent Button Function
+    def agent_operation(self):
+        self.retail_options_lbl.link_lbl.config(text="Agent")
+        self.retail_options_window.destroy()
+
+    # Wholesale Button Function
+    def wholesale_operation(self):
+        self.retail_options_lbl.link_lbl.config(text="Wholesale")
+        self.retail_options_window.destroy()
 
     # Adding Discount Option
     def add_discount(self):
@@ -1370,13 +1452,15 @@ class Invoice:
             self.update_total_price()
 
 
-'''# Testing Invoice Class
+# Testing Invoice Class
 # Root Window
 root = Tk()
+def get_location(event):
+    x = root.winfo_rootx()
+    y = root.winfo_rooty()
+    return print("X:- "+str(x)+" Y:- "+str(y))
 # Invoice Class
 obj = Invoice(root)
-root1 = obj.shipping_var
-obj.get_object(root1)
-obj.set_object(root1, 0)
+root.bind("<ButtonRelease-3>", get_location)
 # Loop For Running Root Window
-root.mainloop()'''
+root.mainloop()
