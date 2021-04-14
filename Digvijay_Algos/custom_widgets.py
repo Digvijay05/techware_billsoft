@@ -10,6 +10,12 @@ class Custom_treeview(Treeview):
     """
 
     def __init__(self, edit_command=None, delete_command=None, *args, **kwargs):
+        self.column_names = []
+        for column in kwargs["columns"].keys():
+            for items in kwargs["columns"][column].items():
+                if items[0] == 'name':
+                    self.column_names.append(items[1])
+        print(self.column_names)
         self.treeview_root = kwargs["master"]
 
         self.style = Style(self.treeview_root)
@@ -38,7 +44,7 @@ class Custom_treeview(Treeview):
         self.style.theme_use('awlight')
 
         # Treeview Style
-        self.style.configure("T.Treeview", background="white", foreground="black", fieldbackground="white",
+        self.style.configure("T.Treeview", background="white", foreground="black", fieldbackground="#FFFF88",
                              )
         self.style.map("T.Treeview",
                        background=[("selected", "#00a62d")])
@@ -46,11 +52,10 @@ class Custom_treeview(Treeview):
         self.style.map("T.Treeview.Heading",
                        background=[("active", "#00b856",), ("!active", "#26e881",), ("pressed", "#7e8c7a",), ],
                        fieldbackground=[("active", "#9eb099",), ("!active", "white",), ("pressed", "#7e8c7a",), ],
-                       foreground=[("active", "#1c1b1b",), ("!active", "white",), ("pressed", "#000000",), ], )
-        # rowheight=[35], font=("Calibri", 15))
+                       foreground=[("active", "#1c1b1b",), ("!active", "black",), ("pressed", "#000000",), ], )
 
         self.custom_treeview = Treeview(self.treeview_root, style="T.Treeview",
-                                        columns=kwargs["column_name"], )
+                                        columns=self.column_names, )
         # Vertical Scrollbar
         self.vsb = Scrollbar(self.custom_treeview,
                              orient="vertical",
@@ -58,14 +63,26 @@ class Custom_treeview(Treeview):
                              )
         # Scroll Command For Particulars Treeview
         self.custom_treeview['yscrollcommand'] = self.vsb.set
+
         # Treeview Headings
-        for column in kwargs["column_name"]:
-            self.custom_treeview.heading(column, text=column)
-        self.custom_treeview["displaycolumns"] = (kwargs["column_name"])
+        for column in kwargs["columns"].keys():
+            for items in kwargs["columns"][column].items():
+                if items[0] == 'name':
+                    print(items[1])
+                    self.custom_treeview.heading(items[1],
+                                                 text=items[1])
+        self.custom_treeview["displaycolumns"] = (self.column_names)
         self.custom_treeview["show"] = "headings"
+
+        self.columns = {}
+        for column in kwargs["columns"]:
+            self.column_name = column[0]
+
         # Treeview Columns
-        for column in kwargs["column_name"]:
-            self.custom_treeview.column(column, width=kwargs["column_width"], anchor='center')
+        for column in kwargs["columns"].keys():
+            for items in kwargs["columns"][column].items():
+                if items[0] == 'width':
+                    self.custom_treeview.column("", width=items[1], anchor='center')
 
         # Tags for Treeview
         self.custom_treeview.tag_configure('oddrow', background="white")
@@ -135,7 +152,7 @@ class Link_Text:
         # Using Theme AWLIGHT
         self.style.theme_use('awlight')
 
-        self.style.configure("S.TLabel", background="white", font=("Calibri", 10, "underline"))
+        self.style.configure("S.TLabel", background="SystemButtonFace", font=("Calibri", 10, "underline"))
 
         self.style.map("S.TLabel",
                        foreground=[("!active", "blue"), ("active", "lightblue"), ("pressed", "darkblue")]
@@ -143,7 +160,6 @@ class Link_Text:
 
         self.link_lbl = Label(self.link_root, text=kwargs["link_text"], style="S.TLabel", relief=FLAT)
         self.link_lbl.bind("<ButtonRelease-1>", kwargs["link_function"])
-
 
 # root = tk.Tk()
 # obj = Link_Text(root, link_text="Link", link_function="nothing")
