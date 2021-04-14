@@ -31,14 +31,14 @@ class Invoice:
     def __init__(self, root):
         # Root Window
         self.invoice_root = root
-        self.invoice_root = root
+        print(self.invoice_root.cget("background"))
         self.invoice_root.attributes('-toolwindow', 1)
         self.invoice_root.attributes('-topmost', 1)
         w, h = self.invoice_root.winfo_screenwidth(), root.winfo_screenheight()
 
         self.invoice_root.title("Unsaved Invoice")
         root.geometry("%dx%d+66+16" % (1185, 665))
-        self.invoice_root['bg'] = "white"
+        # self.invoice_root['bg'] = "white"
 
         # Style Of TTK
         self.style = ttk.Style(self.invoice_root)
@@ -89,16 +89,16 @@ class Invoice:
 
         # Radiobutton style map
         self.style.map("S.TRadiobutton",
-                       background=[("!active", "white"), ("active", "lightgray"), ("pressed", "white"), ],
+                       background=[("!active", "SystemButtonFace"), ("active", "lightgray"), ("pressed", "white"), ],
                        foreground=[("!active", "black"), ("active", "black"), ("pressed", "black"), ],
-                       highlight_background=[("!active","yellow"),("active","green"),("pressed","blue"),])
+                       highlight_background=[("!active", "yellow"), ("active", "green"), ("pressed", "blue"), ])
 
         # CheckButton Style
-        self.style.configure('Red.TCheckbutton', font=("Calibri", 12), takefocus=False, background="white",
+        self.style.configure('Red.TCheckbutton', font=("Calibri", 12), takefocus=False, background="SystemButtonFace",
                              selectcolor="white", lightcolor="white", darkcolor="white", padding=[5, 0, 1, 2],
                              focusthickness=0, borderwidth=0, relief='none')
         self.style.map('Red.TCheckbutton',
-                       background=[('!active', 'white'), ('pressed', 'white'), ('active', 'white')],
+                       background=[('!active', 'SystemButtonFace'), ('pressed', 'white'), ('active', 'white')],
                        foreground=[('!active', 'black'), ('pressed', 'black'), ('active', 'black')])
 
         # Frame Style
@@ -110,7 +110,7 @@ class Invoice:
                        background=[('!active', 'black'), ('pressed', 'white'), ('active', 'white')])
 
         # Invoice Information Frame
-        self.invoice_information_lbl = LabelFrame(self.invoice_root, text="Invoice Information", bg="white")
+        self.invoice_information_lbl = LabelFrame(self.invoice_root, text="Invoice Information", )  # bg="white")
         self.invoice_information_lbl.place(relx=0.005, rely=0, relwidth=0.99, relheight=0.20)
 
         # Variable for Contact No.
@@ -120,8 +120,8 @@ class Invoice:
         self.contact_address_var = StringVar()
 
         # Invoice Type Label
-        self.invoice_type_lbl = Label(self.invoice_information_lbl, text="Invoice Type *", font=("Calibri", 10),
-                                      bg="white")
+        self.invoice_type_lbl = Label(self.invoice_information_lbl, text="Invoice Type *", font=("Calibri", 10), )
+        # bg="white")
         self.invoice_type_lbl.place(relx=0.025, rely=0)
 
         # Invoice Type ComboBox
@@ -135,7 +135,8 @@ class Invoice:
         self.invoice_no_var = StringVar()
 
         # Invoice No. Label
-        self.invoice_no_lbl = Label(self.invoice_information_lbl, text="Invoice-No.", font=("Calibri", 10), bg="white")
+        self.invoice_no_lbl = Label(self.invoice_information_lbl, text="Invoice-No.",
+                                    font=("Calibri", 10), )  # bg="white")
         self.invoice_no_lbl.place(relx=0.22, rely=0)
 
         # Invoice No. Entry
@@ -153,7 +154,7 @@ class Invoice:
         self.invoice_no_var.set(self.rows[0][1])
 
         # Date Label
-        self.invoice_date_lbl = Label(self.invoice_information_lbl, text="Date", font=("Calibri", 10), bg="white")
+        self.invoice_date_lbl = Label(self.invoice_information_lbl, text="Date", font=("Calibri", 10), )  # bg="white")
         self.invoice_date_lbl.place(relx=0.415, rely=0)
 
         # Date Entry
@@ -162,7 +163,7 @@ class Invoice:
 
         # Place Of Supply Label
         self.invoice_place_of_supply_lbl = Label(self.invoice_information_lbl, text="Place of Supply",
-                                                 font=("Calibri", 10), bg="white")
+                                                 font=("Calibri", 10), )  # bg="white")
         self.invoice_place_of_supply_lbl.place(relx=0.61, rely=0)
 
         # Place Of Supply Combobox
@@ -209,7 +210,7 @@ class Invoice:
         self.invoice_place_of_supply_txt.place(relx=0.61, rely=0.2, relwidth=0.17)
 
         # Bill To Label
-        self.bill_to_lbl = Label(self.invoice_information_lbl, text="Bill To", font=("Calibri", 10), bg="white")
+        self.bill_to_lbl = Label(self.invoice_information_lbl, text="Bill To", font=("Calibri", 10), )  # bg="white")
         self.bill_to_lbl.place(relx=0.805, rely=0)
 
         # Client A/c / Cash A/c
@@ -229,7 +230,8 @@ class Invoice:
         self.cash_ac_radio.place(relx=0.89, rely=0.2)
 
         # Contact Label
-        self.contact_no_lbl = Label(self.invoice_information_lbl, text="Contact *", font=("Calibri", 10), bg="white")
+        self.contact_no_lbl = Label(self.invoice_information_lbl, text="Contact *", font=("Calibri", 10), )
+        # bg="white")
         self.contact_no_lbl.place(relx=0.025, rely=0.5)
 
         # Contact Entry
@@ -243,8 +245,8 @@ class Invoice:
         self.retail_options_lbl.link_lbl.place(relx=0.22, rely=0.5)
 
         # Client Name Label
-        self.client_name_lbl = Label(self.invoice_information_lbl, text="Client Name *", font=("Calibri", 10),
-                                     bg="white")
+        self.client_name_lbl = Label(self.invoice_information_lbl, text="Client Name *", font=("Calibri", 10), )
+        #  bg="white")
         self.client_name_lbl.place(relx=0.32, rely=0.5)
 
         # Client Name Entry
@@ -271,7 +273,7 @@ class Invoice:
 
         # Client Address Label
         self.client_address_lbl = Label(self.invoice_information_lbl, text="Client Address", font=("Calibri", 10),
-                                        bg="white")
+                                        )  # bg="white")
         self.client_address_lbl.place(relx=0.415, rely=0.5)
 
         # Client Address Entry
@@ -284,7 +286,7 @@ class Invoice:
 
         # Client GSTIN Label
         self.client_gstin_lbl = Label(self.invoice_information_lbl, text="Client GSTIN", font=("Calibri", 10),
-                                      bg="white")
+                                      )  # bg="white")
         self.client_gstin_lbl.place(relx=0.61, rely=0.5)
 
         # Client GSTIN Entry
@@ -293,7 +295,7 @@ class Invoice:
         self.client_gstin_txt.place(relx=0.61, rely=0.7, relwidth=0.17)
 
         # Sold By Label
-        self.sold_by_lbl = Label(self.invoice_information_lbl, text="Sold By", font=("Calibri", 10), bg="white")
+        self.sold_by_lbl = Label(self.invoice_information_lbl, text="Sold By", font=("Calibri", 10), )  # bg="white")
         self.sold_by_lbl.place(relx=0.805, rely=0.5)
 
         # Sold By ComboBox
@@ -317,8 +319,8 @@ class Invoice:
         self.sold_by_txt.current(0)
 
         # Particulars Frame
-        self.particulars_lbl = LabelFrame(self.invoice_root, text="Particulars", bg="white")
-        self.particulars_lbl.place(relx=0.005, rely=0.22, relwidth=0.99, relheight=0.51)
+        self.particulars_lbl = LabelFrame(self.invoice_root, text="Particulars", )  # bg="white")
+        self.particulars_lbl.place(relx=0.005, rely=0.22, relwidth=0.99, relheight=0.41)
 
         # Bar Code / QR Code
         self.bar_var = StringVar()
@@ -326,30 +328,32 @@ class Invoice:
 
         # Bar Code RadioButton
         self.bar_code_radio = Radiobutton(self.particulars_lbl, text="Bar Code",
-                                          font=("Calibri", 12), bg="white", value="bar code",
+                                          font=("Calibri", 12),  # bg="white",
+                                          value="bar code",
                                           variable=self.bar_var)
-        self.bar_code_radio.place(relx=0.005, rely=0.05)
+        self.bar_code_radio.place(relx=0.005, rely=0.08)
 
         # QR Code RadioButton
         self.item_code_radio = Radiobutton(self.particulars_lbl, text="Item Code",
-                                           font=("Calibri", 12), bg="white", value="qr code",
+                                           font=("Calibri", 12),  # bg="white",
+                                           value="qr code",
                                            variable=self.bar_var)
-        self.item_code_radio.place(relx=0.080, rely=0.05)
+        self.item_code_radio.place(relx=0.080, rely=0.08)
 
         # Bar Code Variable
         self.item_code_var = StringVar()
 
         # Bar Code Entry
         self.item_code_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_code_var)
-        self.item_code_txt.place(relx=0.005, rely=0.2, relwidth=0.155)
+        self.item_code_txt.place(relx=0.005, rely=0.3, relwidth=0.155)
 
         # Item Name Label
-        self.item_name_lbl = Label(self.particulars_lbl, text="Item Name *", font=("Calibri", 10), bg="white")
+        self.item_name_lbl = Label(self.particulars_lbl, text="Item Name *", font=("Calibri", 10), )  # bg="white")
         self.item_name_lbl.place(relx=0.165, rely=0)
 
         # Item Name Entry
         self.item_name_txt = AutocompleteCombobox(self.particulars_lbl, font=("Calibri", 12))
-        self.item_name_txt.place(relx=0.165, rely=0.05, relwidth=0.17)
+        self.item_name_txt.place(relx=0.165, rely=0.1, relwidth=0.17)
 
         self.conn = sqlite3.connect("DB\\Items.db")
         self.cursor = self.conn.cursor()
@@ -369,12 +373,12 @@ class Invoice:
         self.item_name_txt.bind("<<ComboboxSelected>>", self.item_info_add)
 
         # Item Units Label
-        self.item_units_lbl = Label(self.particulars_lbl, text="Unit *", font=("Calibri", 10), bg="white")
+        self.item_units_lbl = Label(self.particulars_lbl, text="Units", font=("Calibri", 10), )  # bg="white")
         self.item_units_lbl.place(relx=0.340, rely=0)
 
         # Item Units Entry
         self.item_units_txt = AutocompleteCombobox(self.particulars_lbl, font=("Calibri", 12))
-        self.item_units_txt.place(relx=0.340, rely=0.05, relwidth=0.08)
+        self.item_units_txt.place(relx=0.340, rely=0.1, relwidth=0.08)
 
         self.units = []
 
@@ -403,7 +407,7 @@ class Invoice:
         self.item_name_txt.config(completevalues=self.units_names)
 
         # Item Quantity Label
-        self.item_qty_lbl = Label(self.particulars_lbl, text="Item Quantity *", font=("Calibri", 10), bg="white")
+        self.item_qty_lbl = Label(self.particulars_lbl, text="Item Quantity *", font=("Calibri", 10), )  # bg="white")
         self.item_qty_lbl.place(relx=0.425, rely=0)
 
         # Item Quantity Variable
@@ -411,10 +415,10 @@ class Invoice:
 
         # Item Quantity Entry
         self.item_qty_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_qty_var)
-        self.item_qty_txt.place(relx=0.425, rely=0.05, relwidth=0.08)
+        self.item_qty_txt.place(relx=0.425, rely=0.1, relwidth=0.08)
 
         # Item Rate Label
-        self.item_rate_lbl = Label(self.particulars_lbl, text="Item Rate *", font=("Calibri", 10), bg="white")
+        self.item_rate_lbl = Label(self.particulars_lbl, text="Item Rate *", font=("Calibri", 10), )  # bg="white")
         self.item_rate_lbl.place(relx=0.510, rely=0)
 
         # Item Rate Variable
@@ -422,16 +426,16 @@ class Invoice:
 
         # Item Rate Entry
         self.item_rate_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.item_rate_var)
-        self.item_rate_txt.place(relx=0.510, rely=0.05, relwidth=0.08)
+        self.item_rate_txt.place(relx=0.510, rely=0.1, relwidth=0.08)
 
         # Category Label
-        self.category_lbl = Label(self.particulars_lbl, text="Category *", font=("Calibri", 10), bg="white")
+        self.category_lbl = Label(self.particulars_lbl, text="Category *", font=("Calibri", 10), )  # bg="white")
         self.category_lbl.place(relx=0.595, rely=0)
 
         # Category ComboBox
         self.category_txt = ttk.Combobox(self.particulars_lbl, font=("Calibri", 12), values=["Select"],
                                          state='readonly')
-        self.category_txt.place(relx=0.595, rely=0.05, relwidth=0.06)
+        self.category_txt.place(relx=0.595, rely=0.1, relwidth=0.06)
         self.category_txt.current(0)
 
         # Connecting To Database
@@ -472,61 +476,62 @@ class Invoice:
             self.categories[category] = {}
 
         # Sub-Category Label
-        self.sub_category_lbl = Label(self.particulars_lbl, text="Sub-Category", font=("Calibri", 10), bg="white")
+        self.sub_category_lbl = Label(self.particulars_lbl, text="Sub-Category", font=("Calibri", 10), )  # bg="white")
         self.sub_category_lbl.place(relx=0.660, rely=0)
 
         # Sub-Category ComboBox
         self.sub_category_txt = ttk.Combobox(self.particulars_lbl, font=("Calibri", 12), values=["Select"])
-        self.sub_category_txt.place(relx=0.660, rely=0.05, relwidth=0.06)
+        self.sub_category_txt.place(relx=0.660, rely=0.1, relwidth=0.06)
         self.sub_category_txt.current(0)
 
         # Discount Label
-        self.discount_lbl = Label(self.particulars_lbl, text="Discount (%)", font=("Calibri", 10), bg="white")
+        self.discount_lbl = Label(self.particulars_lbl, text="Discount (%)", font=("Calibri", 10), )  # bg="white")
         self.discount_lbl.place(relx=0.725, rely=0)
 
         # Discount Entry
         self.discount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
-        self.discount_txt.place(relx=0.725, rely=0.05, relwidth=0.06)
+        self.discount_txt.place(relx=0.725, rely=0.1, relwidth=0.06)
 
         # Tax Label
-        self.tax_lbl = Label(self.particulars_lbl, text="Tax (%)", font=("Calibri", 10), bg="white")
+        self.tax_lbl = Label(self.particulars_lbl, text="Tax (%)", font=("Calibri", 10), )  # bg="white")
         self.tax_lbl.place(relx=0.790, rely=0)
 
         # Tax Entry
         self.tax_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
-        self.tax_txt.place(relx=0.790, rely=0.05, relwidth=0.05)
+        self.tax_txt.place(relx=0.790, rely=0.1, relwidth=0.05)
 
         # CESS Label
-        self.cess_lbl = Label(self.particulars_lbl, text="CESS (%)", font=("Calibri", 10), bg="white")
+        self.cess_lbl = Label(self.particulars_lbl, text="CESS (%)", font=("Calibri", 10), )  # bg="white")
         self.cess_lbl.place(relx=0.845, rely=0)
 
         # CESS Entry
         self.cess_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
-        self.cess_txt.place(relx=0.845, rely=0.05, relwidth=0.05)
+        self.cess_txt.place(relx=0.845, rely=0.1, relwidth=0.05)
 
         # Amount Label
-        self.amount_lbl = Label(self.particulars_lbl, text="Amount", font=("Calibri", 10), bg="white")
+        self.amount_lbl = Label(self.particulars_lbl, text="Amount", font=("Calibri", 10), )  # bg="white")
         self.amount_lbl.place(relx=0.900, rely=0)
 
         # Amount Entry
         self.amount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
-        self.amount_txt.place(relx=0.900, rely=0.05, relwidth=0.05)
+        self.amount_txt.place(relx=0.900, rely=0.1, relwidth=0.05)
 
         # Description Label
-        self.description_lbl = Label(self.particulars_lbl, text="Description", font=("Calibri", 10), bg="white")
-        self.description_lbl.place(relx=0.165, rely=0.13)
+        self.description_lbl = Label(self.particulars_lbl, text="Description", font=("Calibri", 10), )  # bg="white")
+        self.description_lbl.place(relx=0.165, rely=0.20)
 
         # Description Entry
         self.description_txt = scrolledtext.ScrolledText(self.particulars_lbl, font=("Calibri", 12))
-        self.description_txt.place(relx=0.165, rely=0.18, relwidth=0.675, relheight=0.1)
+        self.description_txt.place(relx=0.165, rely=0.30, relwidth=0.675, relheight=0.1)
 
         # Serial number Label
-        self.serial_number_lbl = Label(self.particulars_lbl, text="Serial Number", font=("Calibri", 10), bg="white")
-        self.serial_number_lbl.place(relx=0.845, rely=0.15)
+        self.serial_number_lbl = Label(self.particulars_lbl, text="Serial Number",
+                                       font=("Calibri", 10), )  # bg="white")
+        self.serial_number_lbl.place(relx=0.845, rely=0.20)
 
         # Serial number Entry
         self.serial_number_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
-        self.serial_number_txt.place(relx=0.845, rely=0.20, relwidth=0.105)
+        self.serial_number_txt.place(relx=0.845, rely=0.3, relwidth=0.105)
 
         # Add Particulars Image
         self.add_particular_image = PhotoImage(file="Images\\Add_Button.png")
@@ -539,23 +544,61 @@ class Invoice:
 
         # Particulars Treeview Frame
         self.particulars_treeview_frame = Frame(self.particulars_lbl)
-        self.particulars_treeview_frame.place(relx=0, rely=0.3, relwidth=1, relheight=0.7)
+        self.particulars_treeview_frame.place(relx=0, rely=0.45, relwidth=1, relheight=0.55)
+
+        # Particulars Treeview Dictionary
+        self.particulars_dict = {
+            "No.": {
+                "name": "No.",
+                "width": "40"
+            },
+            "Name": {
+                "name": "Name",
+                "width": "150"
+            },
+            "Unit": {
+                "name": "Unit",
+                "width": "50"
+            },
+            "Rate": {
+                "name": "Rate",
+                "width": "60"
+            },
+            "Quantity": {
+                "name": "Quantity",
+                "width": "60"
+            },
+            "Discount": {
+                "name": "Discount",
+                "width": "60"
+            },
+            "Amount": {
+                "name": "Amount",
+                "width": "60"
+            },
+            "Sub-Category": {
+                "name": "Sub-Category",
+                "width": "70"
+            },
+            "Category": {
+                "name": "Category",
+                "width": "70"
+            },
+        }
 
         # Particulars Treeview
         self.particulars_treeview = Custom_treeview(master=self.particulars_treeview_frame, edit_command=self.edit_item,
                                                     delete_command=self.delete_item,
-                                                    column_name=[
-                                                        "No.", "Name", "Rate",
-                                                        "Quantity", "Item Code", "Sub-Category", "Category"],
-                                                    column_width=150)
+                                                    columns=self.particulars_dict)
         self.particulars_treeview.pack(fill=BOTH, expand=1)
 
         # Payment Frame
-        self.payment_lbl = LabelFrame(self.invoice_root, text="Payment", bg="white")
-        self.payment_lbl.place(relx=0.55, rely=0.66, relwidth=0.18, relheight=0.28)
+        self.payment_lbl = LabelFrame(self.invoice_root, text="Payment", )  # bg="white")
+        self.payment_lbl.place(relx=0.59, rely=0.635, relwidth=0.18, relheight=0.360)
 
         # Payment Date Label
-        self.payment_date_lbl = Label(self.payment_lbl, text="Date", bg="white", font=("Calibri", 11))
+        self.payment_date_lbl = Label(self.payment_lbl, text="Date",  # bg="white",
+                                      font=("Calibri", 11))
         self.payment_date_lbl.place(relx=0, rely=0.01)
 
         # Payment Date Entry
@@ -563,7 +606,8 @@ class Invoice:
         self.payment_date_txt.place(relx=0.3, rely=0.01, relwidth=0.6)
 
         # Payment Mode Label
-        self.payment_mode_lbl = Label(self.payment_lbl, text="Mode", bg="white", font=("Calibri", 11))
+        self.payment_mode_lbl = Label(self.payment_lbl, text="Mode",  # bg="white",
+                                      font=("Calibri", 11))
         self.payment_mode_lbl.place(relx=0, rely=0.2)
 
         # Payment Mode ComboBox
@@ -579,7 +623,8 @@ class Invoice:
         self.payment_mode_txt.bind("<<ComboboxSelected>>", self.update_payment_info_event)
 
         # Txn. Id Label
-        self.txn_id_lbl = Label(self.payment_lbl, text="Txn. Id", bg="white", font=("Calibri", 11))
+        self.txn_id_lbl = Label(self.payment_lbl, text="Txn. Id",  # bg="white",
+                                font=("Calibri", 11))
         self.txn_id_lbl.place(relx=0, rely=0.4)
 
         # Txn. Id Entry
@@ -587,7 +632,8 @@ class Invoice:
         self.txn_id_txt.place(relx=0.3, rely=0.4, relwidth=0.6)
 
         # Payment Amount Label
-        self.payment_amount_lbl = Label(self.payment_lbl, text="Amount", bg="white", font=("Calibri", 11))
+        self.payment_amount_lbl = Label(self.payment_lbl, text="Amount",  # bg="white",
+                                        font=("Calibri", 11))
         self.payment_amount_lbl.place(relx=0, rely=0.6)
 
         # Payment Amount Variable
@@ -599,7 +645,8 @@ class Invoice:
         self.payment_amount_txt.place(relx=0.3, rely=0.6, relwidth=0.6)
 
         # Payment Balance Label
-        self.payment_balance_lbl = Label(self.payment_lbl, text="Balance", bg="white", font=("Calibri", 11))
+        self.payment_balance_lbl = Label(self.payment_lbl, text="Balance",  # bg="white",
+                                         font=("Calibri", 11))
         self.payment_balance_lbl.place(relx=0, rely=0.8)
 
         # Payment Balance variable
@@ -635,7 +682,7 @@ class Invoice:
         self.shipping_chkbox.place(relx=0.33, rely=0.77)
 
         # Delivery Terms Frame
-        self.delivery_terms_lbl = LabelFrame(self.invoice_root, text="Delivery Terms", bg="white")
+        self.delivery_terms_lbl = LabelFrame(self.invoice_root, text="Delivery Terms", )  # bg="white")
         self.delivery_terms_lbl.place(relx=0.25, rely=0.88, relwidth=0.22, relheight=0.1)
 
         # Delivery Terms Entry
@@ -643,7 +690,7 @@ class Invoice:
         self.delivery_terms_txt.pack(fill=BOTH, expand=1)
 
         # Remarks Frame
-        self.remarks_lbl = LabelFrame(self.invoice_root, text="Remarks(Private Use)", bg="white")
+        self.remarks_lbl = LabelFrame(self.invoice_root, text="Remarks(Private Use)", )  # bg="white")
         self.remarks_lbl.place(relx=0.01, rely=0.88, relwidth=0.22, relheight=0.1)
 
         # Remarks Entry
@@ -652,8 +699,8 @@ class Invoice:
         self.invoice_root.update_idletasks()
 
         # Total Amount Frame
-        self.total_amount_frame = LabelFrame(self.invoice_root, text="Total Amount", bg="white")
-        self.total_amount_frame.place(relx=0.78, rely=0.66, relwidth=0.22, relheight=0.2)
+        self.total_amount_frame = LabelFrame(self.invoice_root, text="Total Amount", )  # bg="white")
+        self.total_amount_frame.place(relx=0.78, rely=0.635, relwidth=0.21, relheight=0.2)
 
         # Total Price Variable
         self.totalPrice = StringVar()
@@ -668,38 +715,42 @@ class Invoice:
         self.subTotalPrice = StringVar()
 
         # Total Amount Label
-        self.total_amount_lbl = Label(self.total_amount_frame, text="SubTotal:-", font=("Calibri", 13), bg="white")
+        self.total_amount_lbl = Label(self.total_amount_frame, text="SubTotal:-", font=("Calibri", 13), )  # bg="white")
         self.total_amount_lbl.place(relx=0, rely=0)
 
         # Total Amount TXT
-        self.total_amount_txt = Label(self.total_amount_frame, text="", textvariable=self.subTotalPrice, bg="white",
+        self.total_amount_txt = Label(self.total_amount_frame, text="", textvariable=self.subTotalPrice,  # bg="white",
                                       font=("Calibri", 13))
         self.total_amount_txt.place(relx=0.3, rely=0)
 
         # Shipping Charges Label
-        self.shipping_charges_lbl = Label(self.total_amount_frame, text="Shipping:-", font=("Calibri", 13), bg="white")
+        self.shipping_charges_lbl = Label(self.total_amount_frame, text="Shipping:-",
+                                          font=("Calibri", 13), )  # bg="white")
         self.shipping_charges_lbl.place(relx=0, rely=0.25)
 
         # Shipping Charges TXT
         self.shippingCharges_txt = Label(self.total_amount_frame, text="", textvariable=self.shippingCharges,
-                                         bg="white", font=("Calibri", 13))
+                                         # bg="white",
+                                         font=("Calibri", 13))
         self.shippingCharges_txt.place(relx=0.3, rely=0.25)
 
         # Discount Amount Label
-        self.discount_amount_lbl = Label(self.total_amount_frame, text="Discount:-", font=("Calibri", 13), bg="white")
+        self.discount_amount_lbl = Label(self.total_amount_frame, text="Discount:-",
+                                         font=("Calibri", 13), )  # bg="white")
         self.discount_amount_lbl.place(relx=0, rely=0.50)
 
         # Discount Amount TXT
-        self.discount_amount_txt = Label(self.total_amount_frame, text="", textvariable=self.discountPrice, bg="white",
+        self.discount_amount_txt = Label(self.total_amount_frame, text="", textvariable=self.discountPrice,
+                                         # bg="white",
                                          font=("Calibri", 13))
         self.discount_amount_txt.place(relx=0.3, rely=0.50)
 
         # Total Amount Label
-        self.total_amount_lbl = Label(self.total_amount_frame, text="Total:-", font=("Calibri", 13), bg="white")
+        self.total_amount_lbl = Label(self.total_amount_frame, text="Total:-", font=("Calibri", 13), )  # bg="white")
         self.total_amount_lbl.place(relx=0, rely=0.75)
 
         # Total Amount TXT
-        self.total_amount_txt = Label(self.total_amount_frame, text="", textvariable=self.totalPrice, bg="white",
+        self.total_amount_txt = Label(self.total_amount_frame, text="", textvariable=self.totalPrice,  # bg="white",
                                       font=("Calibri", 13))
         self.total_amount_txt.place(relx=0.3, rely=0.75)
 
