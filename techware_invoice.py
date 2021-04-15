@@ -31,7 +31,6 @@ class Invoice:
     def __init__(self, root):
         # Root Window
         self.invoice_root = root
-        print(self.invoice_root.cget("background"))
         self.invoice_root.attributes('-toolwindow', 1)
         self.invoice_root.attributes('-topmost', 1)
         w, h = self.invoice_root.winfo_screenwidth(), root.winfo_screenheight()
@@ -550,39 +549,39 @@ class Invoice:
         self.particulars_dict = {
             "No.": {
                 "name": "No.",
-                "width": "40"
+                "width": "20"
             },
             "Name": {
                 "name": "Name",
-                "width": "150"
+                "width": "200"
             },
             "Unit": {
                 "name": "Unit",
-                "width": "50"
+                "width": "30"
             },
             "Rate": {
                 "name": "Rate",
-                "width": "60"
+                "width": "40"
             },
             "Quantity": {
                 "name": "Quantity",
-                "width": "60"
+                "width": "40"
             },
             "Discount": {
                 "name": "Discount",
-                "width": "60"
+                "width": "40"
             },
             "Amount": {
                 "name": "Amount",
-                "width": "60"
+                "width": "40"
             },
             "Sub-Category": {
                 "name": "Sub-Category",
-                "width": "70"
+                "width": "50"
             },
             "Category": {
                 "name": "Category",
-                "width": "70"
+                "width": "50"
             },
         }
 
@@ -766,10 +765,8 @@ class Invoice:
     def update_payment_info_event(self, event):
         if self.payment_mode_txt.get() == "Cheque" or self.payment_mode_txt.get() == "Card" or \
                 self.payment_mode_txt.get() == "Mobile Wallet" or self.payment_mode_txt.get() == "Bank Transfer":
-            print("ENABLED")
             self.txn_id_txt.config(state=NORMAL)
         else:
-            print("DISABLED")
             self.txn_id_txt.config(state=DISABLED)
 
     def edit_item(self):
@@ -1080,8 +1077,6 @@ class Invoice:
         self.excel.Visible = False
 
         try:
-            print('Start conversion to PDF')
-
             # Open
             self.wb = self.excel.Workbooks.Open(self.WB_PATH)
 
@@ -1169,8 +1164,6 @@ class Invoice:
 
         self.excel.Visible = False
         try:
-            print('Start Printing')
-
             # Open
             self.wb = self.excel.Workbooks.Open(self.WB_PATH)
 
@@ -1560,6 +1553,5 @@ def get_location(event):
 
 # Invoice Class
 obj = Invoice(root)
-root.bind("<ButtonRelease-3>", get_location)
 # Loop For Running Root Window
 root.mainloop()
