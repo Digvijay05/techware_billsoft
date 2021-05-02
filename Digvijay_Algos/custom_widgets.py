@@ -9,8 +9,11 @@ class Custom_treeview(Treeview):
     This ttk Treeview is made custom for Any Software
     """
 
-    def __init__(self, edit_command=None, delete_command=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__()
+        self.command_labels = kwargs["command_labels"]
+        self.command_options = [command for command in kwargs["command_options"]]
+        self.commands = list(zip(self.command_labels, self.command_options))
         self.column_names = []
         for column in kwargs["columns"].keys():
             for items in kwargs["columns"][column].items():
@@ -18,6 +21,7 @@ class Custom_treeview(Treeview):
                     self.column_names.append(items[1])
 
         self.treeview_root = kwargs["master"]
+        self.command_labels = kwargs["command_labels"]
 
         self.style = Style(self.treeview_root)
         # Loading TTK Themes
@@ -45,12 +49,11 @@ class Custom_treeview(Treeview):
         self.style.theme_use('awlight')
 
         # Treeview Style
-        self.style.configure("T.Treeview", background="white", foreground="black", fieldbackground="#FFFF88",
-                             rowheight=10000,
-                             )
+        self.style.configure("T.Treeview", background="white", foreground="black", fieldbackground="#FFFF88")
         self.style.map("T.Treeview",
                        background=[("selected", "#00a62d")])
         # Treeview Heading Style
+        # self.style.map("T.Treeview.Heading", font="Times New Roman 1")
         self.style.map("T.Treeview.Heading",
                        background=[("active", "#00b856",), ("!active", "#26e881",), ("pressed", "#7e8c7a",), ],
                        fieldbackground=[("active", "#9eb099",), ("!active", "white",), ("pressed", "#7e8c7a",), ],
@@ -106,15 +109,13 @@ class Custom_treeview(Treeview):
 
         # Right-Click Menu
         self.treeview_menu = tk.Menu(self.custom_treeview, tearoff=0)
-        self.treeview_menu.add_command(label="Edit", command=edit_command)
-        self.treeview_menu.add_command(label="Delete", command=delete_command)
-
+        for i, j in self.commands:
+            self.treeview_menu.add_command(label=i, command=j)
         self.custom_treeview.bind("<<TreeviewSelect>>" and "<ButtonRelease-3>", self.select_item)
 
     def select_item(self, event):
         """
         It Checks If An Item Is Selected or Not If Selected then it Shows Menu.
-
         :param event:
         """
         self.cursor_row = self.custom_treeview.focus()
@@ -244,64 +245,63 @@ class ManageWindow:
                                                columns=kwargs["columns"])
         self.manage_treeview.place(relx=0, rely=0, relwidth=1, relheight=1)
 
-
-root = tk.Tk()
-# Particulars Treeview Dictionary
-invoices_dict = {
-    "Sr No.": {
-        "name": "Sr No.",
-        "width": "60"
-    },
-    "Status": {
-        "name": "Status",
-        "width": "80"
-    },
-    "Payment Due": {
-        "name": "Payment Due",
-        "width": "100"
-    },
-    "Last Payment On.": {
-        "name": "Last Payment On.",
-        "width": "120"
-    },
-    "Invoice-Type": {
-        "name": "Invoice-Type",
-        "width": "100"
-    },
-    "Invoice-No.": {
-        "name": "Invoice-No.",
-        "width": "100"
-    },
-    "Contact No.": {
-        "name": "Contact No.",
-        "width": "150"
-    },
-    "Client Name": {
-        "name": "Client Name",
-        "width": "200"
-    },
-    "Address": {
-        "name": "Address",
-        "width": "150"
-    },
-    "State(Pos)": {
-        "name": "State(Pos)",
-        "width": "80"
-    },
-    "GSTIN": {
-        "name": "GSTIN",
-        "width": "100"
-    },
-    "Total Amount": {
-        "name": "Total Amount",
-        "width": "100"
-    },
-    "Created On.": {
-        "name": "Created On.",
-        "width": "120"
-    },
-}
-obj = ManageWindow(root, search_frame="Invoices", search_name="Invoice No.", search_function="nothing",
-                   reset_function="nothing", edit="nothing", delete="nothing",
-                   columns=invoices_dict)
-root.mainloop()
+# root = tk.Tk()
+# # Particulars Treeview Dictionary
+# invoices_dict = {
+#     "Sr No.": {
+#         "name": "Sr No.",
+#         "width": "60"
+#     },
+#     "Status": {
+#         "name": "Status",
+#         "width": "80"
+#     },
+#     "Payment Due": {
+#         "name": "Payment Due",
+#         "width": "100"
+#     },
+#     "Last Payment On.": {
+#         "name": "Last Payment On.",
+#         "width": "120"
+#     },
+#     "Invoice-Type": {
+#         "name": "Invoice-Type",
+#         "width": "100"
+#     },
+#     "Invoice-No.": {
+#         "name": "Invoice-No.",
+#         "width": "100"
+#     },
+#     "Contact No.": {
+#         "name": "Contact No.",
+#         "width": "150"
+#     },
+#     "Client Name": {
+#         "name": "Client Name",
+#         "width": "200"
+#     },
+#     "Address": {
+#         "name": "Address",
+#         "width": "150"
+#     },
+#     "State(Pos)": {
+#         "name": "State(Pos)",
+#         "width": "80"
+#     },
+#     "GSTIN": {
+#         "name": "GSTIN",
+#         "width": "100"
+#     },
+#     "Total Amount": {
+#         "name": "Total Amount",
+#         "width": "100"
+#     },
+#     "Created On.": {
+#         "name": "Created On.",
+#         "width": "120"
+#     },
+# }
+# obj = ManageWindow(root, search_frame="Invoices", search_name="Invoice No.", search_function="nothing",
+#                    reset_function="nothing", edit="nothing", delete="nothing",
+#                    columns=invoices_dict)
+# root.mainloop()
