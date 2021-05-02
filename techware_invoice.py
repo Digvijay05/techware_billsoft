@@ -386,6 +386,8 @@ class Invoice:
 
         self.cursor.execute("SELECT * FROM UNIT")
 
+        self.rows = self.cursor.fetchall()
+
         for i in self.rows:
             self.units.append(i[1])
 
@@ -507,12 +509,18 @@ class Invoice:
         self.cess_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
         self.cess_txt.place(relx=0.845, rely=0.1, relwidth=0.05)
 
+        # Amount Variable
+        self.amount_var = StringVar()
+
         # Amount Label
-        self.amount_lbl = Label(self.particulars_lbl, text="Amount", font=("Calibri", 10), )  # bg="white")
+        self.amount_lbl = Label(self.particulars_lbl, text="Amount", font=("Calibri", 10))  # bg="white")
         self.amount_lbl.place(relx=0.900, rely=0)
 
+        self.discount_txt.bind("KeyRelease", self.discount_amount_info_event)
+
         # Amount Entry
-        self.amount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.amount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12),
+                                    textvariable=self.amount_var)
         self.amount_txt.place(relx=0.900, rely=0.1, relwidth=0.05)
 
         # Description Label
@@ -549,46 +557,55 @@ class Invoice:
         self.particulars_dict = {
             "No.": {
                 "name": "No.",
-                "width": "20"
+                "width": "60"
             },
             "Name": {
                 "name": "Name",
-                "width": "200"
+                "width": "240"
             },
             "Unit": {
                 "name": "Unit",
-                "width": "30"
+                "width": "70"
             },
             "Rate": {
                 "name": "Rate",
-                "width": "40"
+                "width": "80"
             },
             "Quantity": {
                 "name": "Quantity",
-                "width": "40"
+                "width": "80"
             },
             "Discount": {
                 "name": "Discount",
-                "width": "40"
+                "width": "80"
+            },
+            "Tax": {
+                "name": "Tax",
+                "width": "80"
+            },
+            "CESS": {
+                "name": "CESS",
+                "width": "80"
             },
             "Amount": {
                 "name": "Amount",
-                "width": "40"
+                "width": "80"
             },
             "Sub-Category": {
                 "name": "Sub-Category",
-                "width": "50"
+                "width": "150"
             },
             "Category": {
                 "name": "Category",
-                "width": "50"
+                "width": "160"
             },
         }
 
         # Particulars Treeview
-        self.particulars_treeview = Custom_treeview(master=self.particulars_treeview_frame, edit_command=self.edit_item,
-                                                    delete_command=self.delete_item,
-                                                    columns=self.particulars_dict)
+        self.particulars_treeview = Custom_treeview(master=self.particulars_treeview_frame,
+                                                    command_options=[self.edit_item, self.delete_item],
+                                                    command_labels=["Edit", "Delete"], columns=self.particulars_dict,
+                                                    )
         self.particulars_treeview.pack(fill=BOTH, expand=1)
 
         # Payment Frame
@@ -762,11 +779,30 @@ class Invoice:
                                          command=self.print_operation)
         self.save_print_btn.place(relx=0.9, rely=0.88)
 
+    def discount_amount_info_event(self, event):
+        self.discount = self.discount_txt.get()
+        self.rate = self.item_rate_txt.get()
+        self.quantity = self.item_qty_txt.get()
+
+        self.final_rate = self.rate * self.quantity
+
+        self.final_discount = (self.discount * self.final_rate) / 100
+        print(self.final_discount)
+        self.final_amount = self.amount_var.set(self.final_rate - self.final_discount)
+
     def update_payment_info_event(self, event):
-        if self.payment_mode_txt.get() == "Cheque" or self.payment_mode_txt.get() == "Card" or \
+        if self.payment_mode_txt.get() == "Cheque" or \
                 self.payment_mode_txt.get() == "Mobile Wallet" or self.payment_mode_txt.get() == "Bank Transfer":
+            self.txn_id_lbl.config(text="Txn. Id")
+            self.txn_id_txt.config(state=NORMAL)
+        elif self.payment_mode_txt.get() == "Demand Draft":
+            self.txn_id_lbl.config(text="DD No.")
+            self.txn_id_txt.config(state=NORMAL)
+        elif self.payment_mode_txt.get() == "Card":
+            self.txn_id_lbl.config(text="Last 4 Digits")
             self.txn_id_txt.config(state=NORMAL)
         else:
+            self.txn_id_lbl.config(text="Txn. Id")
             self.txn_id_txt.config(state=DISABLED)
 
     def edit_item(self):
@@ -878,7 +914,7 @@ class Invoice:
         # IF ELSE Statement For Adding And Removing Discount Entries According to CheckButton
         if self.discount_var.get() == 1:
             self.discount_charges_txt = ttk.Entry(self.invoice_root, font=("Calibri", 12))
-            self.discount_charges_txt.place(relx=0.24, rely=0.77, relwidth=0.05)
+            self.discount_charges_txt.place(relx=0.25, rely=0.77, relwidth=0.05)
             self.discount_charges_txt.bind("<KeyRelease>", self.update_total_price_event)
         else:
             self.discount_charges_txt.destroy()
