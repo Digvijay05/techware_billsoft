@@ -211,9 +211,8 @@ class Required_Text:
 
         self.required_frame = Frame(self.required_root)
         self.required_lbl = Label(self.required_root, text=kwargs["required_text"], style="Required_Text.TLabel")
-        self.required_str = Label(self.required_root, text="*", style="Required.TLabel")
-        self.required_lbl.grid(row=1, column=1)
-        self.required_str.grid(row=0, column=1)
+        self.required_str = Label(self.required_lbl, text="*", style="Required.TLabel")
+        self.required_str.place(relx=0.865, rely=0)
 
 
 class ManageWindow:
@@ -346,5 +345,5 @@ class ManageWindow:
 # }
 # obj = ManageWindow(root, search_frame="Invoices", search_name="Invoice No.", search_function="nothing",
 #                    reset_function="nothing", edit="nothing", delete="nothing",
-#                    columns=invoices_dict)
+#                    columns=invoices_dict, command_labels=["edit", "delete"])
 # root.mainloop()

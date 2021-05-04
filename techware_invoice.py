@@ -29,7 +29,7 @@ class Invoice:
         # Root Window
         self.invoice_root = root
         self.invoice_root.attributes('-toolwindow', 1)
-        # self.invoice_root.attributes('-topmost', 1)
+        self.invoice_root.attributes('-topmost', 1)
 
         self.invoice_root.title("Unsaved Invoice")
         root.geometry("%dx%d+66+16" % (1185, 665))
@@ -117,6 +117,7 @@ class Invoice:
         # Invoice Type Label
         self.invoice_type_lbl = Required_Text(self.invoice_information_lbl, required_text="Invoice Type   ")
         # bg="white")
+        self.invoice_type_lbl.required_lbl.place(relx=0.025, rely=0)
         self.invoice_type_lbl.required_frame.place(relx=0.025, rely=0)
 
         # Invoice Type ComboBox
@@ -130,9 +131,11 @@ class Invoice:
         self.invoice_no_var = StringVar()
 
         # Invoice No. Label
-        self.invoice_no_lbl = Label(self.invoice_information_lbl, text="Invoice-No.",
-                                    font=("Calibri", 10), )  # bg="white")
-        self.invoice_no_lbl.place(relx=0.22, rely=0)
+        self.invoice_no_lbl = Required_Text(self.invoice_information_lbl, required_text="Invoice-No.   ")  # bg="white")
+        self.invoice_no_lbl.required_lbl.place(relx=0.22, rely=0)
+        self.invoice_no_lbl.required_str.place(relx=0.85, rely=0)
+        self.invoice_no_lbl.required_frame.place(relx=0.22, rely=0)
+        # self.invoice_no_lbl.place(relx=0.22, rely=0)
 
         # Invoice No. Entry
         self.invoice_no_txt = ttk.Entry(self.invoice_information_lbl, font=("Calibri", 12),
@@ -158,9 +161,12 @@ class Invoice:
         self.invoice_date_txt.place(relx=0.415, rely=0.2, relwidth=0.17)
 
         # Place Of Supply Label
-        self.invoice_place_of_supply_lbl = Label(self.invoice_information_lbl, text="Place of Supply",
-                                                 font=("Calibri", 10), )  # bg="white")
-        self.invoice_place_of_supply_lbl.place(relx=0.61, rely=0)
+        self.invoice_place_of_supply_lbl = Required_Text(self.invoice_information_lbl,
+                                                         required_text="Place of Supply   ")
+        self.invoice_place_of_supply_lbl.required_lbl.place(relx=0.61, rely=0)
+        self.invoice_place_of_supply_lbl.required_str.place(relx=0.85, rely=0)
+        self.invoice_place_of_supply_lbl.required_frame.place(relx=0.61, rely=0)
+        # self.invoice_place_of_supply_lbl.place(relx=0.61, rely=0)
 
         # Place Of Supply Combobox
         self.invoice_place_of_supply_txt = AutocompleteCombobox(
@@ -206,8 +212,11 @@ class Invoice:
         self.invoice_place_of_supply_txt.place(relx=0.61, rely=0.2, relwidth=0.17)
 
         # Bill To Label
-        self.bill_to_lbl = Label(self.invoice_information_lbl, text="Bill To", font=("Calibri", 10), )  # bg="white")
-        self.bill_to_lbl.place(relx=0.805, rely=0)
+        self.bill_to_lbl = Required_Text(self.invoice_information_lbl, required_text="Bill To   ")  # bg="white")
+        self.bill_to_lbl.required_lbl.place(relx=0.805, rely=0)
+        self.bill_to_lbl.required_str.place(relx=0.85, rely=0)
+        self.bill_to_lbl.required_frame.place(relx=0.805, rely=0)
+        # self.bill_to_lbl.place(relx=0.805, rely=0)
 
         # Client A/c / Cash A/c
         self.bill_to_var = StringVar()
@@ -228,6 +237,8 @@ class Invoice:
         # Contact Label
         self.contact_no_lbl = Required_Text(self.invoice_information_lbl, required_text="Contact   ")
         # bg="white")
+        self.contact_no_lbl.required_lbl.place(relx=0.025, rely=0.5)
+        self.contact_no_lbl.required_str.place(relx=0.85, rely=0)
         self.contact_no_lbl.required_frame.place(relx=0.025, rely=0.5)
 
         # Contact Entry
@@ -243,6 +254,7 @@ class Invoice:
         # Client Name Label
         self.client_name_lbl = Required_Text(self.invoice_information_lbl, required_text="Client Name   ")
         #  bg="white")
+        self.client_name_lbl.required_lbl.place(relx=0.32, rely=0.5)
         self.client_name_lbl.required_frame.place(relx=0.32, rely=0.5)
 
         # Client Name Entry
@@ -268,7 +280,9 @@ class Invoice:
         self.client_name_txt.bind("<<ComboboxSelected>>", self.client_info_add)
 
         # Client Address Label
-        self.client_address_lbl = Required_Text(self.invoice_information_lbl, required_text="Client Address   ")  # bg="white")
+        self.client_address_lbl = Required_Text(self.invoice_information_lbl,
+                                                required_text="Client Address   ")  # bg="white")
+        self.client_address_lbl.required_lbl.place(relx=0.415, rely=0.5)
         self.client_address_lbl.required_frame.place(relx=0.415, rely=0.5)
 
         # Client Address Entry
@@ -280,7 +294,9 @@ class Invoice:
         self.client_gstin_var = StringVar()
 
         # Client GSTIN Label
-        self.client_gstin_lbl = Required_Text(self.invoice_information_lbl, required_text="Client GSTIN   ")  # bg="white")
+        self.client_gstin_lbl = Required_Text(self.invoice_information_lbl,
+                                              required_text="Client GSTIN   ")  # bg="white")
+        self.client_gstin_lbl.required_lbl.place(relx=0.61, rely=0.5)
         self.client_gstin_lbl.required_frame.place(relx=0.61, rely=0.5)
 
         # Client GSTIN Entry
@@ -290,6 +306,7 @@ class Invoice:
 
         # Sold By Label
         self.sold_by_lbl = Required_Text(self.invoice_information_lbl, required_text="Sold By   ")  # bg="white")
+        self.sold_by_lbl.required_lbl.place(relx=0.805, rely=0.5)
         self.sold_by_lbl.required_frame.place(relx=0.805, rely=0.5)
 
         # Sold By ComboBox
@@ -343,6 +360,7 @@ class Invoice:
 
         # Item Name Label
         self.item_name_lbl = Required_Text(self.particulars_lbl, required_text="Item Name   ")  # bg="white")
+        self.item_name_lbl.required_lbl.place(relx=0.165, rely=0)
         self.item_name_lbl.required_frame.place(relx=0.165, rely=0)
 
         # Item Name Entry
@@ -368,6 +386,8 @@ class Invoice:
 
         # Item Units Label
         self.item_units_lbl = Required_Text(self.particulars_lbl, required_text="Units   ")  # bg="white")
+        self.item_units_lbl.required_lbl.place(relx=0.340, rely=0)
+        self.item_units_lbl.required_str.place(relx=0.75, rely=0)
         self.item_units_lbl.required_frame.place(relx=0.340, rely=0)
 
         # Item Units Entry
@@ -404,6 +424,7 @@ class Invoice:
 
         # Item Quantity Label
         self.item_qty_lbl = Required_Text(self.particulars_lbl, required_text="Item Quantity   ")  # bg="white")
+        self.item_qty_lbl.required_lbl.place(relx=0.425, rely=0)
         self.item_qty_lbl.required_frame.place(relx=0.425, rely=0)
 
         # Item Quantity Variable
@@ -415,6 +436,7 @@ class Invoice:
 
         # Item Rate Label
         self.item_rate_lbl = Required_Text(self.particulars_lbl, required_text="Item Rate   ")  # bg="white")
+        self.item_rate_lbl.required_lbl.place(relx=0.510, rely=0)
         self.item_rate_lbl.required_frame.place(relx=0.510, rely=0)
 
         # Item Rate Variable
@@ -426,6 +448,7 @@ class Invoice:
 
         # Category Label
         self.category_lbl = Required_Text(self.particulars_lbl, required_text="Category   ")  # bg="white")
+        self.category_lbl.required_lbl.place(relx=0.595, rely=0)
         self.category_lbl.required_frame.place(relx=0.595, rely=0)
 
         # Category ComboBox
@@ -473,6 +496,7 @@ class Invoice:
 
         # Sub-Category Label
         self.sub_category_lbl = Required_Text(self.particulars_lbl, required_text="Sub-Category   ")  # bg="white")
+        self.sub_category_lbl.required_lbl.place(relx=0.660, rely=0)
         self.sub_category_lbl.required_frame.place(relx=0.660, rely=0)
 
         # Sub-Category ComboBox
@@ -616,9 +640,11 @@ class Invoice:
         self.payment_date_txt.place(relx=0.3, rely=0.01, relwidth=0.6)
 
         # Payment Mode Label
-        self.payment_mode_lbl = Label(self.payment_lbl, text="Mode",  # bg="white",
-                                      font=("Calibri", 11))
-        self.payment_mode_lbl.place(relx=0, rely=0.2)
+        self.payment_mode_lbl = Required_Text(self.payment_lbl, required_text="Mode   ")
+        self.payment_mode_lbl.required_lbl.place(relx=0, rely=0.2)
+        self.payment_mode_lbl.required_str.place(relx=0.75, rely=0)
+        self.payment_mode_lbl.required_frame.place(relx=0, rely=0.2)
+        # self.payment_mode_lbl.place(relx=0, rely=0.2)
 
         # Payment Mode ComboBox
         self.payment_mode_txt = ttk.Combobox(self.payment_lbl, font=("Calibri", 11), values=["Select", "Cash",
@@ -836,12 +862,33 @@ class Invoice:
 
     def update_client(self):
         if self.bill_to_var.get() == "cash":
+            # Client Entry
             self.client_name_var = StringVar()
             self.client_name_txt = ttk.Entry(self.invoice_information_lbl, font=("Calibri", 12),
                                              textvariable=self.client_name_var)
             self.client_name_txt.place(relx=0.22, rely=0.7, relwidth=0.17)
             self.client_name_var.set("CASH")
             self.payment_balance_var.set(0)
+            self.contact_no_lbl.required_frame.destroy()
+            self.contact_no_lbl.required_str.destroy()
+            self.contact_no_lbl.required_lbl.destroy()
+            self.client_address_lbl.required_frame.destroy()
+            self.client_address_lbl.required_str.destroy()
+            self.client_address_lbl.required_lbl.destroy()
+            self.client_gstin_lbl.required_frame.destroy()
+            self.client_gstin_lbl.required_str.destroy()
+            self.client_gstin_lbl.required_lbl.destroy()
+            # Contact Label
+            self.contact_no_lbl = Label(self.invoice_information_lbl, text="Contact")
+            self.contact_no_lbl.place(relx=0.025, rely=0.5)
+
+            # Client Address
+            self.client_address_lbl = Label(self.invoice_information_lbl, text="Client Address")
+            self.client_address_lbl.place(relx=0.415, rely=0.5)
+
+            # Client GSTIN
+            self.client_gstin_lbl = Label(self.invoice_information_lbl, text="Client GSTIN")
+            self.client_gstin_lbl.place(relx=0.61, rely=0.5)
         else:
             # Client Name Entry
             self.client_name_txt = AutocompleteCombobox(self.invoice_information_lbl, completevalues=["Select"],
@@ -864,6 +911,25 @@ class Invoice:
             self.client_name_txt.config(completevalues=self.clients)
 
             self.client_name_txt.bind("<<ComboboxSelected>>", self.client_info_add)
+
+            # Contact Label
+            self.contact_no_lbl = Required_Text(self.invoice_information_lbl, required_text="Contact   ")
+            # bg="white")
+            self.contact_no_lbl.required_lbl.place(relx=0.025, rely=0.5)
+            self.contact_no_lbl.required_str.place(relx=0.85, rely=0)
+            self.contact_no_lbl.required_frame.place(relx=0.025, rely=0.5)
+
+            # Client Address Label
+            self.client_address_lbl = Required_Text(self.invoice_information_lbl,
+                                                    required_text="Client Address   ")  # bg="white")
+            self.client_address_lbl.required_lbl.place(relx=0.415, rely=0.5)
+            self.client_address_lbl.required_frame.place(relx=0.415, rely=0.5)
+
+            # Client GSTIN Label
+            self.client_gstin_lbl = Required_Text(self.invoice_information_lbl,
+                                                  required_text="Client GSTIN   ")  # bg="white")
+            self.client_gstin_lbl.required_lbl.place(relx=0.61, rely=0.5)
+            self.client_gstin_lbl.required_frame.place(relx=0.61, rely=0.5)
 
         self.invoice_type_txt.current(2)
 
@@ -951,83 +1017,191 @@ class Invoice:
 
     # Saving Bills
     def save_operation(self):
-        self.conn = sqlite3.connect("DB\\Invoices.db")
-        self.cursor = self.conn.cursor()
+        self.ans = tmsg.askquestion("Are you Sure?", f"Are you Sure to Save Invoice No. '{self.invoice_no_txt.get()}'")
+        if self.ans == "yes":
+            if self.bill_to_var.get() == "client":
+                if self.client_name_txt.get() == "" or self.client_address_txt.get() == "" or self.contact_no_txt.get() \
+                        == "" or self.invoice_type_txt.get() == "Select" or self.invoice_place_of_supply_txt.get() == \
+                        "Select" or self.invoice_no_txt.get() == "" or self.sold_by_txt.get() == "Select" or \
+                        self.payment_mode_txt.get() == "Select":
+                    tmsg.showerror("Error", "Please Fill All Required Fields!")
+                else:
+                    print("all checks passed in client")
+                    self.conn = sqlite3.connect("DB\\Invoices.db")
+                    self.cursor = self.conn.cursor()
 
-        self.invoice_n = re.findall(r"[^\W\d_]+|\d+", self.invoice_no)
-        self.invoice = int(self.invoice_n[1])
-        self.invoice += 1
+                    self.cwd = os.getcwd()
 
-        self.cwd = os.getcwd()
+                    self.file_path = f"{self.cwd}\\DB\\INVOICES"
 
-        self.file_path = f"{self.cwd}\\DB\\INVOICES"
+                    if not os.path.exists(self.file_path):
+                        os.makedirs(self.file_path)
 
-        if not os.path.exists(self.file_path):
-            os.makedirs(self.file_path)
+                    # self.conn.execute("DROP TABLE INVOICES")
 
-        # self.conn.execute("DROP TABLE INVOICES")
+                    # Preparing Table For Invoices
+                    self.query = """CREATE TABLE IF NOT EXISTS INVOICES(
+                                                        id  INTEGER PRIMARY KEY autoincrement,
+                                                        Invoice_Type VARCHAR(500) NOT NULL,
+                                                        Invoice_No VARCHAR(500) NOT NULL,
+                                                        Invoice_Date DATE NOT NULL,
+                                                        POS VARCHAR(500) NOT NULL,
+                                                        Bill_To VARCHAR(500) NOT NULL,
+                                                        Client_Contact INT(10) NOT NULL,
+                                                        Client_Name VARCHAR(500) NOT NULL,
+                                                        Client_Address VARCHAR(5000) NOT NULL,
+                                                        Client_GST VARCHAR(500) NOT NULL,
+                                                        Sold_By VARCHAR(500) NOT NULL,
+                                                        Discount INTEGER NOT NULL,
+                                                        Shipping INTEGER NOT NULL,
+                                                        SubTotal INTEGER NOT NULL,
+                                                        Total INTEGER NOT NULL,
+                                                        Payment_Date DATE NOT NULL,
+                                                        Payment_Mode VARCHAR(500) NOT NULL,
+                                                        Payment_No VARCHAR(500) NOT NULL,
+                                                        Payment_Amount VARCHAR(500) NOT NULL,
+                                                        Client_Balance INTEGER NOT NULL,
+                                                        Remarks VARCHAR(5000) NOT NULL,
+                                                        Delivery_Terms VARCHAR(5000) NOT NULL)
+                                                     """
+                    self.save_bill_query = """INSERT INTO INVOICES(Invoice_Type, Invoice_No, Invoice_Date,
+                                                                                        POS, Bill_To, Client_Contact,
+                                                                                        Client_Name, Client_Address, Client_GST,
+                                                                                        Sold_By, Discount, Shipping,
+                                                                                        SubTotal, Total, Payment_Date,
+                                                                                        Payment_Mode, Payment_No, Payment_Amount,
+                                                                                        Client_Balance, Remarks, Delivery_Terms) 
+                                                                                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+                    self.save_bill_values = (self.invoice_type_txt.get(), self.invoice_no_txt.get(),
+                                             self.invoice_date_txt.get(), self.invoice_place_of_supply_txt.get(),
+                                             self.bill_to_var.get(), self.contact_no_txt.get(),
+                                             self.client_name_txt.get(),
+                                             self.client_address_txt.get(), self.client_gstin_txt.get(),
+                                             self.sold_by_txt.get(), self.discountPrice.get(),
+                                             self.shippingCharges.get(), self.subTotalPrice.get(),
+                                             self.totalPrice.get(), self.payment_date_txt.get(),
+                                             self.payment_mode_txt.get(), self.txn_id_txt.get(),
+                                             self.payment_amount_txt.get(), self.payment_balance_txt.get(),
+                                             self.remarks_txt.get("1.0", END), self.delivery_terms_txt.get("1.0", END),
+                                             )
+                    self.cursor.execute(self.query)
+                    self.cursor.execute(self.save_bill_query, self.save_bill_values)
+                    self.conn.commit()
+                    self.conn.close()
+                    self.save_items = json.dumps(self.items, indent=len(self.items))
+                    with open(f"Details\\{self.client_name_txt.get()}{self.invoice_no_txt.get()}.json", "w") as outfile:
+                        outfile.write(self.save_items)
+                    self.save_excel()
+                    self.conn = sqlite3.connect("DB\\Business.db")
+                    self.cursor = self.conn.cursor()
+                    self.cursor.execute("SELECT * FROM ID")
+                    self.rows = self.cursor.fetchall()
+                    self.invoice = self.rows[0][1]
+                    self.new_invoice = re.findall(r"[^\W\d_]+|\d+", self.invoice)
+                    self.invoice_n = int(self.new_invoice[1])
+                    self.invoice_n += 1
+                    self.invoice_number = str(self.new_invoice[0] + str(self.invoice_n))
+                    self.sql_string = '''UPDATE ID
+                                                            SET Id = ?
+                                                            WHERE Category = ?'''
+                    self.cursor.execute(self.sql_string, (self.invoice_number, "Invoice"))
+                    self.conn.commit()
+                    self.conn.close()
+                    self.save_excel()
+            elif self.bill_to_var.get() == "cash":
+                if self.client_name_txt.get() == "" or self.invoice_type_txt.get() == "Select" or \
+                        self.invoice_place_of_supply_txt.get() == \
+                        "Select" or self.invoice_no_txt.get() == "" or self.sold_by_txt.get() == "Select" or \
+                        self.payment_mode_txt.get() == "Select":
+                    tmsg.showerror("Error", "Please Fill All Required Fields!")
+                else:
+                    print("all checks passed in cash")
+                    self.conn = sqlite3.connect("DB\\Invoices.db")
+                    self.cursor = self.conn.cursor()
 
-        # Preparing Table For Invoices
-        self.query = """CREATE TABLE IF NOT EXISTS INVOICES(
-                        id  INTEGER PRIMARY KEY autoincrement,
-                        Invoice_Type VARCHAR(500) NOT NULL,
-                        Invoice_No VARCHAR(500) NOT NULL,
-                        Invoice_Date DATE NOT NULL,
-                        Sold_By VARCHAR(500) NOT NULL,
-                        Client_Contact INT(10) NOT NULL,
-                        Client_Name VARCHAR(500) NOT NULL,
-                        Client_Address VARCHAR(5000) NOT NULL,
-                        Discount INTEGER NOT NULL,
-                        Shipping INTEGER NOT NULL,
-                        SubTotal INTEGER NOT NULL,
-                        Total INTEGER NOT NULL,
-                        Payment_Date DATE NOT NULL,
-                        Payment_Mode VARCHAR(500) NOT NULL,
-                        Payment_No VARCHAR(500) NOT NULL,
-                        Payment_Amount VARCHAR(500) NOT NULL,
-                        Client_Balance INTEGER NOT NULL,
-                        Remarks VARCHAR(5000) NOT NULL,
-                        Delivery_Terms VARCHAR(5000) NOT NULL)
-                     """
-        self.save_bill_query = """INSERT INTO INVOICES(Invoice_Type, Invoice_No, Invoice_Date,
-                                                        Sold_By, Client_Contact, Client_Name,
-                                                        Client_Address, Discount, Shipping,
-                                                        SubTotal, Total, Payment_Date, Payment_Mode,
-                                                        Payment_No, Payment_Amount, Client_Balance,
-                                                        Remarks, Delivery_Terms) 
-                                                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
-        self.save_bill_values = (self.invoice_type_txt.get(), self.invoice_no_txt.get(),
-                                 self.invoice_date_txt.get(), self.sold_by_txt.get(),
-                                 self.contact_no_txt.get(), self.client_name_txt.get(),
-                                 self.client_address_txt.get(), self.discountPrice.get(),
-                                 self.shippingCharges.get(), self.subTotalPrice.get(),
-                                 self.totalPrice.get(), self.payment_date_txt.get(),
-                                 self.payment_mode_txt.get(), self.txn_id_txt.get(),
-                                 self.payment_amount_txt.get(), self.payment_balance_txt.get(),
-                                 self.remarks_txt.get("1.0", END), self.delivery_terms_txt.get("1.0", END),
-                                 )
-        self.cursor.execute(self.query)
-        self.cursor.execute(self.save_bill_query, self.save_bill_values)
-        self.conn.commit()
-        self.conn.close()
-        self.save_items = json.dumps(self.items, indent=len(self.items))
-        with open(f"Details\\{self.client_name_txt.get()}{self.invoice_no_txt.get()}.json", "w") as outfile:
-            outfile.write(self.save_items)
-        self.save_excel()
-        self.conn = sqlite3.connect("DB\\Business.db")
-        self.cursor = self.conn.cursor()
-        self.sql_string = '''UPDATE ID
-                             SET Id = ?
-                             WHERE Category = ?'''
-        self.sql_string_query = (self.sql_string, (self.invoice, "Invoice"))
-        self.conn.commit()
-        self.conn.close()
-        self.ans = tmsg.showinfo("Success", "Data Saved! Click Ok To Exit")
-        self.invoice_root.destroy()
+                    self.cwd = os.getcwd()
+
+                    self.file_path = f"{self.cwd}\\DB\\INVOICES"
+
+                    if not os.path.exists(self.file_path):
+                        os.makedirs(self.file_path)
+
+                    # self.conn.execute("DROP TABLE INVOICES")
+
+                    # Preparing Table For Invoices
+                    self.query = """CREATE TABLE IF NOT EXISTS INVOICES(
+                                                                            id  INTEGER PRIMARY KEY autoincrement,
+                                                                            Invoice_Type VARCHAR(500) NOT NULL,
+                                                                            Invoice_No VARCHAR(500) NOT NULL,
+                                                                            Invoice_Date DATE NOT NULL,
+                                                                            POS VARCHAR(500) NOT NULL,
+                                                                            Bill_To VARCHAR(500) NOT NULL,
+                                                                            Client_Contact INT(10) NOT NULL,
+                                                                            Client_Name VARCHAR(500) NOT NULL,
+                                                                            Client_Address VARCHAR(5000) NOT NULL,
+                                                                            Client_GST VARCHAR(500) NOT NULL,
+                                                                            Sold_By VARCHAR(500) NOT NULL,
+                                                                            Discount INTEGER NOT NULL,
+                                                                            Shipping INTEGER NOT NULL,
+                                                                            SubTotal INTEGER NOT NULL,
+                                                                            Total INTEGER NOT NULL,
+                                                                            Payment_Date DATE NOT NULL,
+                                                                            Payment_Mode VARCHAR(500) NOT NULL,
+                                                                            Payment_No VARCHAR(500) NOT NULL,
+                                                                            Payment_Amount VARCHAR(500) NOT NULL,
+                                                                            Client_Balance INTEGER NOT NULL,
+                                                                            Remarks VARCHAR(5000) NOT NULL,
+                                                                            Delivery_Terms VARCHAR(5000) NOT NULL)
+                                                                         """
+                    self.save_bill_query = """INSERT INTO INVOICES(Invoice_Type, Invoice_No, Invoice_Date,
+                                                                                                            POS, Bill_To, Client_Contact,
+                                                                                                            Client_Name, Client_Address, Client_GST,
+                                                                                                            Sold_By, Discount, Shipping,
+                                                                                                            SubTotal, Total, Payment_Date,
+                                                                                                            Payment_Mode, Payment_No, Payment_Amount,
+                                                                                                            Client_Balance, Remarks, Delivery_Terms) 
+                                                                                                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+                    self.save_bill_values = (self.invoice_type_txt.get(), self.invoice_no_txt.get(),
+                                             self.invoice_date_txt.get(), self.invoice_place_of_supply_txt.get(),
+                                             self.bill_to_var.get(), self.contact_no_txt.get(),
+                                             self.client_name_txt.get(),
+                                             self.client_address_txt.get(), self.client_gstin_txt.get(),
+                                             self.sold_by_txt.get(), self.discountPrice.get(),
+                                             self.shippingCharges.get(), self.subTotalPrice.get(),
+                                             self.totalPrice.get(), self.payment_date_txt.get(),
+                                             self.payment_mode_txt.get(), self.txn_id_txt.get(),
+                                             self.payment_amount_txt.get(), self.payment_balance_txt.get(),
+                                             self.remarks_txt.get("1.0", END), self.delivery_terms_txt.get("1.0", END),
+                                             )
+                    self.cursor.execute(self.query)
+                    self.cursor.execute(self.save_bill_query, self.save_bill_values)
+                    self.conn.commit()
+                    self.conn.close()
+                    self.save_items = json.dumps(self.items, indent=len(self.items))
+                    with open(f"Details\\{self.client_name_txt.get()}{self.invoice_no_txt.get()}.json", "w") as outfile:
+                        outfile.write(self.save_items)
+                    self.save_excel()
+                    self.conn = sqlite3.connect("DB\\Business.db")
+                    self.cursor = self.conn.cursor()
+                    self.cursor.execute("SELECT * FROM ID")
+                    self.rows = self.cursor.fetchall()
+                    self.invoice = self.rows[0][1]
+                    self.new_invoice = re.findall(r"[^\W\d_]+|\d+", self.invoice)
+                    self.invoice_n = int(self.new_invoice[1])
+                    self.invoice_n += 1
+                    self.invoice_number = str(self.new_invoice[0] + str(self.invoice_n))
+                    self.sql_string = '''UPDATE ID
+                                                                                SET Id = ?
+                                                                                WHERE Category = ?'''
+                    self.cursor.execute(self.sql_string, (self.invoice_number, "Invoice"))
+                    self.conn.commit()
+                    self.conn.close()
+                    self.save_excel()
+        else:
+            self.invoice_root.destroy()
 
     # Saving Excel Function
     def save_excel(self):
-
         # Getting Details From Database
         self.conn = sqlite3.connect("DB\\Invoices.db")
         self.cursor = self.conn.cursor()
