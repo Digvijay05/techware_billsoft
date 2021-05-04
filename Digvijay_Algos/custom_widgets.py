@@ -173,6 +173,49 @@ class Link_Text:
         self.link_lbl.bind("<ButtonRelease-1>", kwargs["link_function"])
 
 
+class Required_Text:
+    def __init__(self, root, **kwargs):
+        self.required_root = root
+
+        self.style = Style(self.required_root)
+        # Loading TTK Themes
+        self.required_root.tk.eval("""
+                                        set base_theme_dir C:/Users/Digvijay/Downloads/awthemes-10.2.0/awthemes-10.2.0
+
+                                        package ifneeded awthemes 10.2.0 \
+                                            [list source [file join $base_theme_dir awthemes.tcl]]
+                                        package ifneeded colorutils 4.8 \
+                                            [list source [file join $base_theme_dir colorutils.tcl]]
+                                        package ifneeded awdark 7.7 \
+                                            [list source [file join $base_theme_dir awdark.tcl]]
+                                        package ifneeded awlight 7.9 \
+                                            [list source [file join $base_theme_dir awlight.tcl]]
+                                        package ifneeded awbreeze 7.9 \
+                                            [list source [file join $base_theme_dir awbreeze.tcl]]
+                                        """)
+
+        # Load The Awdark And Awlight Themes
+        self.required_root.tk.call("package", "require", 'awthemes')
+        self.required_root.tk.call("package", "require", 'awlight')
+        # self.root.tk.call("package", "require", 'awbreeze')
+
+        # Using Theme AWLIGHT
+        self.style.theme_use('awlight')
+
+        self.style.configure("Required.TLabel", background="SystemButtonFace", font=("Calibri", 10))
+
+        self.style.map("Required.TLabel",
+                       foreground=[("!active", "red"), ("active", "red"), ("pressed", "red")]
+                       )
+        self.style.configure("Required_Text.TLabel", background="SystemButtonFace", font=("Calibri", 10))
+
+        self.required_frame = Frame(self.required_root)
+        self.required_lbl = Label(self.required_root, text=kwargs["required_text"], style="Required_Text.TLabel")
+        self.required_str = Label(self.required_root, text="*", style="Required.TLabel")
+        self.required_lbl.grid(row=1, column=1)
+        self.required_str.grid(row=0, column=1)
+
+
 class ManageWindow:
     def __init__(self, root, *args, **kwargs):
         self.manage_root = root
