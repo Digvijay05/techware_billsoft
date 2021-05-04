@@ -93,47 +93,47 @@ class Home:
                                        fg="white")
         self.quickInfo_amo_due.place(relx=0.71, rely=0.60)
 
-        self.newInvoice_image = PhotoImage(file="Images\\New Invoice.png")
+        self.newInvoice_image = PhotoImage(file="Images\\New Invoice.png", master=self.root)
         self.newInvoice = ttk.Button(self.root, text="  New Invoice", image=self.newInvoice_image, compound="left",
                                      cursor="hand2", style="C.TButton", command=self.new_invoice_btn)
         self.newInvoice.place(relx=0.160, rely=0.35, relwidth=0.11, relheight=0.06)
         CreateToolTip(self.newInvoice, "Create An Invoice")
-        self.newPayment_image = PhotoImage(file="Images\\New Payment.png")
+        self.newPayment_image = PhotoImage(file="Images\\New Payment.png", master=self.root)
         self.newPayment = ttk.Button(self.root, text="  New Payment", image=self.newPayment_image, compound=LEFT,
                                      cursor="hand2", style="C.TButton", command=self.new_invoice_btn)
         self.newPayment.place(relx=0.310, rely=0.35, relwidth=0.11, relheight=0.06)
 
-        self.newItem_image = PhotoImage(file="Images\\New Item.png")
+        self.newItem_image = PhotoImage(file="Images\\New Item.png", master=self.root)
         self.newItem = ttk.Button(self.root, text="  Add Item", image=self.newItem_image, compound=LEFT,
                                   cursor="hand2", style="S.TButton", command=self.add_item_btn)
         self.newItem.place(relx=0.160, rely=0.43, relwidth=0.11, relheight=0.05)
 
-        self.newExpense_image = PhotoImage(file="Images\\Expense.png")
+        self.newExpense_image = PhotoImage(file="Images\\Expense.png", master=self.root)
         self.newExpense = ttk.Button(self.root, text="  Add Expense", image=self.newExpense_image, compound=LEFT,
                                      cursor="hand2", style="S.TButton", command=self.add_expense_btn)
         self.newExpense.place(relx=0.310, rely=0.43, relwidth=0.11, relheight=0.05)
 
-        self.newCustomer_image = PhotoImage(file="Images\\Customer Image.png")
+        self.newCustomer_image = PhotoImage(file="Images\\Customer Image.png", master=self.root)
         self.newCustomer = ttk.Button(self.root, text="  Add Customer", image=self.newCustomer_image, compound=LEFT,
                                       cursor="hand2", style="S.TButton", command=self.add_client_btn)
         self.newCustomer.place(relx=0.160, rely=0.50, relwidth=0.11, relheight=0.05)
 
-        self.newStaff_image = PhotoImage(file="Images\\Staff Image.png")
+        self.newStaff_image = PhotoImage(file="Images\\Staff Image.png", master=self.root)
         self.newStaff = ttk.Button(self.root, text="  Add Staff", image=self.newStaff_image, compound=LEFT,
                                    cursor="hand2", style="S.TButton", command=self.add_staff_btn)
         self.newStaff.place(relx=0.310, rely=0.50, relwidth=0.11, relheight=0.05)
 
-        self.paymentIn_image = PhotoImage(file="Images\\Add.png")
+        self.paymentIn_image = PhotoImage(file="Images\\Add.png", master=self.root)
         self.paymentIn = ttk.Button(self.root, text="  Payment In", image=self.paymentIn_image, compound=LEFT,
                                     cursor="hand2", style="C.TButton")
         self.paymentIn.place(relx=0.160, rely=0.57, relwidth=0.11, relheight=0.05)
 
-        self.paymentOut_image = PhotoImage(file="Images\\Subtract.png")
+        self.paymentOut_image = PhotoImage(file="Images\\Subtract.png", master=self.root)
         self.paymentOut = ttk.Button(self.root, text="  Payment Out", image=self.paymentOut_image, compound=LEFT,
                                      cursor="hand2", style="C.TButton")
         self.paymentOut.place(relx=0.310, rely=0.57, relwidth=0.11, relheight=0.05)
 
-        self.sale_image = PhotoImage(file="Images\\Sale Image.png")
+        self.sale_image = PhotoImage(file="Images\\Sale Image.png", master=self.root)
         # Create a menu button
         self.sale = Menubutton(self.dashboard, image=self.sale_image, cursor="hand2", text="  Sale", fg="white",
                                bg="#00b33c", direction=RIGHT,
@@ -145,7 +145,8 @@ class Home:
         self.sale['activeforeground'] = "white"
         # Add some commands
         self.sale.menu.add_command(label="New Invoice", command=self.new_invoice_btn, font=("Calibri", 13))
-        self.sale.menu.add_command(label="Search and Manage Invoices", font=("Calibri", 13), command=self.manage_invoices())
+        self.sale.menu.add_command(label="Search and Manage Invoices", font=("Calibri", 13),
+                                   command=self.manage_invoices())
         self.sale.menu.add_separator()
         self.sale.menu.add_command(label="New Delivery", font=("Calibri", 13))
         self.sale.menu.add_command(label="Search and Manage Deliveries", font=("Calibri", 13))
@@ -154,7 +155,7 @@ class Home:
         self.sale.menu.add_command(label="Search and Manage Payments", font=("Calibri", 13))
         self.sale.place(relx=0, rely=0, relwidth=1, relheight=0.05)
 
-        self.staff_image = PhotoImage(file="Images\\Staff Image.png")
+        self.staff_image = PhotoImage(file="Images\\Staff Image.png", master=self.root)
         self.staff = Menubutton(self.dashboard, image=self.staff_image, text="  Staff", fg="white", bg="#00b33c",
                                 font=("Calibri", 13), compound=LEFT, anchor="w", direction=RIGHT)
         self.staff.menu = Menu(self.staff, tearoff=0)
@@ -166,7 +167,7 @@ class Home:
                                     command=self.manage_staff_btn)
         self.staff.place(relx=0, rely=0.05, relwidth=1, relheight=0.05)
 
-        self.customer_image = PhotoImage(file="Images\\Customer Image.png")
+        self.customer_image = PhotoImage(file="Images\\Customer Image.png", master=self.root)
         self.customer = Menubutton(self.dashboard, image=self.customer_image, text="  Customer", fg="white",
                                    bg="#00b33c",
                                    font=("Calibri", 13), compound=LEFT, anchor="w", direction=RIGHT)
@@ -179,7 +180,7 @@ class Home:
                                        command=self.manage_client_btn)
         self.customer.place(relx=0, rely=0.1, relwidth=1, relheight=0.05)
 
-        self.expense_image = PhotoImage(file="Images\\Expense.png")
+        self.expense_image = PhotoImage(file="Images\\Expense.png", master=self.root)
         self.expense = Menubutton(self.dashboard, image=self.expense_image, text="  Expenses", fg="white",
                                   bg="#00b33c",
                                   font=("Calibri", 13), compound=LEFT, anchor="w", direction=RIGHT)
@@ -191,7 +192,7 @@ class Home:
         self.expense.menu.add_command(label="Search and Manage Expenses", font=("Calibri", 14))
         self.expense.place(relx=0, rely=0.15, relwidth=1, relheight=0.05)
 
-        self.reports_image = PhotoImage(file="Images\\Reports.png")
+        self.reports_image = PhotoImage(file="Images\\Reports.png", master=self.root)
         self.reports = Menubutton(self.dashboard, image=self.reports_image, text="  Reports", fg="white",
                                   bg="#00b33c", state=DISABLED,
                                   font=("Calibri", 13), compound=LEFT, anchor="w", direction=RIGHT)
@@ -207,7 +208,7 @@ class Home:
 
         CreateToolTip(self.reports, f"Coming Soon! Your Reports Are Still Generated in {os.getcwd()}\\Monthly Bills.")
 
-        self.master_image = PhotoImage(file="Images\\Master.png")
+        self.master_image = PhotoImage(file="Images\\Master.png", master=self.root)
         self.master = Menubutton(self.dashboard, image=self.master_image, text="  Master", fg="white",
                                  bg="#00b33c",
                                  font=("Calibri", 13), compound=LEFT, anchor="w", direction=RIGHT)
@@ -237,7 +238,7 @@ class Home:
         self.bulk_add.add_command(label="Import Items", font=("Calibri", 13))
         self.master.place(relx=0, rely=0.25, relwidth=1, relheight=0.05)
 
-        self.tool_image = PhotoImage(file="Images\\Tools.png")
+        self.tool_image = PhotoImage(file="Images\\Tools.png", master=self.root)
         self.tool = Menubutton(self.dashboard, image=self.tool_image, text="  Tools", fg="white",
                                bg="#00b33c",
                                font=("Calibri", 13), compound=LEFT, anchor="w", direction=RIGHT)
@@ -249,7 +250,7 @@ class Home:
         self.tool.menu.add_command(label="Discount Calculator", command=self.disc_calc_btn, font=("Calibri", 15))
         self.tool.place(relx=0, rely=0.30, relwidth=1, relheight=0.05)
 
-        self.setting_image = PhotoImage(file="Images\\Settings.png")
+        self.setting_image = PhotoImage(file="Images\\Settings.png", master=self.root)
         self.setting = Menubutton(self.dashboard, image=self.setting_image, text="  Settings", fg="white",
                                   bg="#00b33c",
                                   font=("Calibri", 13), compound=LEFT, anchor="w", direction=RIGHT)
@@ -2344,8 +2345,5 @@ class Home:
 
 
 root = Tk()
-# root_image = ImageTk.PhotoImage(
-# Image.open(r"C:\Users\Digvijay\Desktop\Techware Billing System\Images\\[Original size] Tech ware.ico"))
-# root.tk.call('wm', 'iconphoto', root._w, root_image)
 obj = Home(root)
 root.mainloop()
