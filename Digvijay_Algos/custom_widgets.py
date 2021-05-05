@@ -1,3 +1,5 @@
+import os
+import re
 import tkinter as tk
 from tkinter.ttk import *
 from tkinter.constants import *
@@ -254,14 +256,12 @@ class ManageWindow:
                        background=[("!active", "#20bf00"), ("active", "#25db00"), ("pressed", "#27e800")],
                        foreground=[("!active", "white"), ("active", "white"), ("pressed", "white"), ]
                        )
+        self.manage_root.title(f"Manage {kwargs['search_frame']}")
+        self.manage_root.geometry("%sx%s+125+50" % (1100, 600))
+        self.manage_root.attributes('-toolwindow', 1)
+        self.manage_root.attributes('-topmost', 1)
 
-        self.manage_window = tk.Toplevel(root)
-        self.manage_window.title(f"Manage {kwargs['search_frame']}")
-        self.manage_window.geometry("%sx%s+125+50" % (1100, 600))
-        self.manage_window.attributes('-toolwindow', 1)
-        self.manage_window.attributes('-topmost', 1)
-
-        self.search_frame = LabelFrame(self.manage_window, text="Search " + kwargs["search_frame"],
+        self.search_frame = LabelFrame(self.manage_root, text="Search " + kwargs["search_frame"],
                                        style="S.TLabelframe")
         self.search_frame.place(relx=0.02, rely=0.01, relwidth=0.75, relheight=0.1)
 
@@ -272,20 +272,25 @@ class ManageWindow:
         self.client_search_txt = Entry(self.search_frame, font=("Calibri", 12))
         self.client_search_txt.place(relx=0.12, rely=0.1, relwidth=0.88)
 
-        self.search_btn = Button(self.manage_window, text="Search", style="Green.TButton",
+        self.search_btn = Button(self.manage_root, text="Search", style="Green.TButton",
                                  command=kwargs["search_function"])
         self.search_btn.place(relx=0.80, rely=0.05)
 
-        self.reset_btn = Button(self.manage_window, text="Reset", style="Red.TButton",
+        self.reset_btn = Button(self.manage_root, text="Reset", style="Red.TButton",
                                 command=kwargs["reset_function"])
         self.reset_btn.place(relx=0.90, rely=0.05)
 
-        self.manage_treeview_frame = LabelFrame(self.manage_window, text="Recent Invoice(s)", style="S.TLabelframe")
+        self.manage_treeview_frame = LabelFrame(self.manage_root, text="Recent Invoice(s)", style="S.TLabelframe")
         self.manage_treeview_frame.place(relx=0.005, rely=0.39, relwidth=0.99, relheight=0.59)
 
-        self.manage_treeview = Custom_treeview(kwargs["edit"], kwargs["delete"], master=self.manage_treeview_frame,
-                                               columns=kwargs["columns"])
+        self.manage_treeview = Custom_treeview(master=self.manage_treeview_frame,
+                                               columns=kwargs["columns"], command_labels=kwargs["command_labels"],
+                                               command_options=kwargs["command_options"])
         self.manage_treeview.place(relx=0, rely=0, relwidth=1, relheight=1)
+        print(kwargs["database"])
+
+    def insert(self, **kwargs):
+        self.manage_treeview.custom_treeview.insert(**kwargs)
 
 # root = tk.Tk()
 # # Particulars Treeview Dictionary
@@ -344,6 +349,9 @@ class ManageWindow:
 #     },
 # }
 # obj = ManageWindow(root, search_frame="Invoices", search_name="Invoice No.", search_function="nothing",
-#                    reset_function="nothing", edit="nothing", delete="nothing",
-#                    columns=invoices_dict, command_labels=["edit", "delete"])
+#                    reset_function="nothing",
+#                    command_options=["edit_item", "delete_item"], database=f"{os.getcwd()}\\DB\\Invoices.db",
+#                    table_name="INVOICES",
+#                    command_labels=["Edit", "Delete"], columns=invoices_dict,
+#                    )
 # root.mainloop()
