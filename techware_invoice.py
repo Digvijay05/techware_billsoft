@@ -14,6 +14,9 @@ from datetime import date, timedelta
 from tkinter import *
 from tkinter import messagebox as tmsg
 from tkinter import ttk, scrolledtext
+
+from win32com.universal import com_error
+
 from Digvijay_Algos.custom_widgets import Custom_treeview, Link_Text, Required_Text
 from openpyxl import load_workbook
 from tkcalendar import DateEntry
@@ -658,13 +661,17 @@ class Invoice:
 
         self.payment_mode_txt.bind("<<ComboboxSelected>>", self.update_payment_info_event)
 
+        # Txn. Id Variable
+        self.txn_id_var = StringVar()
+
         # Txn. Id Label
         self.txn_id_lbl = Label(self.payment_lbl, text="Txn. Id",  # bg="white",
                                 font=("Calibri", 11))
         self.txn_id_lbl.place(relx=0, rely=0.4)
 
         # Txn. Id Entry
-        self.txn_id_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 11), state='disabled')
+        self.txn_id_txt = ttk.Entry(self.payment_lbl, font=("Calibri", 11), state='disabled',
+                                    textvariable=self.txn_id_var)
         self.txn_id_txt.place(relx=0.3, rely=0.4, relwidth=0.6)
 
         # Payment Amount Label
@@ -889,6 +896,7 @@ class Invoice:
             # Client GSTIN
             self.client_gstin_lbl = Label(self.invoice_information_lbl, text="Client GSTIN")
             self.client_gstin_lbl.place(relx=0.61, rely=0.5)
+            return "CASH"
         else:
             # Client Name Entry
             self.client_name_txt = AutocompleteCombobox(self.invoice_information_lbl, completevalues=["Select"],
@@ -930,7 +938,7 @@ class Invoice:
                                                   required_text="Client GSTIN   ")  # bg="white")
             self.client_gstin_lbl.required_lbl.place(relx=0.61, rely=0.5)
             self.client_gstin_lbl.required_frame.place(relx=0.61, rely=0.5)
-
+            return "CLIENT"
         self.invoice_type_txt.current(2)
 
     # Adding Client Info
@@ -1022,8 +1030,8 @@ class Invoice:
             if self.bill_to_var.get() == "client":
                 if self.client_name_txt.get() == "" or self.client_address_txt.get() == "" or self.contact_no_txt.get() \
                         == "" or self.invoice_type_txt.get() == "Select" or self.invoice_place_of_supply_txt.get() == \
-                        "Select" or self.invoice_no_txt.get() == "" or self.sold_by_txt.get() == "Select" or \
-                        self.payment_mode_txt.get() == "Select":
+                        "Select" or self.invoice_no_txt.get() == "" or self.payment_mode_txt.get() == "Select":
+                    # self.sold_by_txt.get() == "Select" or \
                     tmsg.showerror("Error", "Please Fill All Required Fields!")
                 else:
                     print("all checks passed in client")
@@ -1091,7 +1099,6 @@ class Invoice:
                     self.save_items = json.dumps(self.items, indent=len(self.items))
                     with open(f"Details\\{self.client_name_txt.get()}{self.invoice_no_txt.get()}.json", "w") as outfile:
                         outfile.write(self.save_items)
-                    self.save_excel()
                     self.conn = sqlite3.connect("DB\\Business.db")
                     self.cursor = self.conn.cursor()
                     self.cursor.execute("SELECT * FROM ID")
@@ -1102,8 +1109,8 @@ class Invoice:
                     self.invoice_n += 1
                     self.invoice_number = str(self.new_invoice[0] + str(self.invoice_n))
                     self.sql_string = '''UPDATE ID
-                                                            SET Id = ?
-                                                            WHERE Category = ?'''
+                                         SET Id = ?
+                                         WHERE Category = ?'''
                     self.cursor.execute(self.sql_string, (self.invoice_number, "Invoice"))
                     self.conn.commit()
                     self.conn.close()
@@ -1153,14 +1160,10 @@ class Invoice:
                                                                             Remarks VARCHAR(5000) NOT NULL,
                                                                             Delivery_Terms VARCHAR(5000) NOT NULL)
                                                                          """
-                    self.save_bill_query = """INSERT INTO INVOICES(Invoice_Type, Invoice_No, Invoice_Date,
-                                                                                                            POS, Bill_To, Client_Contact,
-                                                                                                            Client_Name, Client_Address, Client_GST,
-                                                                                                            Sold_By, Discount, Shipping,
-                                                                                                            SubTotal, Total, Payment_Date,
-                                                                                                            Payment_Mode, Payment_No, Payment_Amount,
-                                                                                                            Client_Balance, Remarks, Delivery_Terms) 
-                                                                                                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
+                    self.save_bill_query = """INSERT INTO INVOICES(Invoice_Type, Invoice_No, Invoice_Date, POS, 
+                    Bill_To, Client_Contact, Client_Name, Client_Address, Client_GST, Sold_By, Discount, Shipping, 
+                    SubTotal, Total, Payment_Date, Payment_Mode, Payment_No, Payment_Amount, Client_Balance, Remarks, 
+                    Delivery_Terms) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
                     self.save_bill_values = (self.invoice_type_txt.get(), self.invoice_no_txt.get(),
                                              self.invoice_date_txt.get(), self.invoice_place_of_supply_txt.get(),
                                              self.bill_to_var.get(), self.contact_no_txt.get(),
@@ -1180,7 +1183,6 @@ class Invoice:
                     self.save_items = json.dumps(self.items, indent=len(self.items))
                     with open(f"Details\\{self.client_name_txt.get()}{self.invoice_no_txt.get()}.json", "w") as outfile:
                         outfile.write(self.save_items)
-                    self.save_excel()
                     self.conn = sqlite3.connect("DB\\Business.db")
                     self.cursor = self.conn.cursor()
                     self.cursor.execute("SELECT * FROM ID")
@@ -1191,8 +1193,9 @@ class Invoice:
                     self.invoice_n += 1
                     self.invoice_number = str(self.new_invoice[0] + str(self.invoice_n))
                     self.sql_string = '''UPDATE ID
-                                                                                SET Id = ?
-                                                                                WHERE Category = ?'''
+                                         SET Id = ?
+                                         WHERE Category = ?
+                                      '''
                     self.cursor.execute(self.sql_string, (self.invoice_number, "Invoice"))
                     self.conn.commit()
                     self.conn.close()
@@ -1207,12 +1210,21 @@ class Invoice:
         self.cursor = self.conn.cursor()
         self.cursor.execute("SELECT * FROM INVOICES where Invoice_No = ?", (self.invoice_no_txt.get(),))
         self.rows = self.cursor.fetchone()
-
+        self.total = re.findall(r"[^\W\d_]+|\d+", self.rows[14])
+        self.total_amount = self.total[1]
+        self.payment = re.findall(r"[^\W\d_]+|\d+", self.rows[18])
+        self.payment_d = self.payment[0]
+        self.payment_due = int(self.total_amount) - int(self.payment_d)
+        self.conn = sqlite3.connect("DB\\Employee.db")
+        self.cursor = self.conn.cursor()
+        self.cursor.execute("SELECT * FROM STAFF WHERE Employee_Code = ?", (self.sold_by_txt.get(),))
+        self.rows = self.cursor.fetchone()
+        print(self.rows)
         # Excel File Starting
         self.xlWorkBook = load_workbook(f"Images\\Workbook_2.xlsx")
         self.xlSheet = self.xlWorkBook.active
-        del self.xlWorkBook['Invoice']._images[0]
         self.xlSheet.title = "Invoice"
+        del self.xlWorkBook['Invoice']._images[0]
         self.headerxl = ["No.", "Name", "Rate", "Quantity", "Price", "Total Price:- ",  # + totalPrice.get()
                          str(date.today())]
         self.delivery_date = str(date.today() + timedelta(4))
@@ -1224,14 +1236,18 @@ class Invoice:
         self.img.height = 91.0866144
         self.xlSheet.add_image(self.img)
         self.xlSheet.cell(row=self.row + 9, column=self.col + 1, value=f"Customer Name:- {self.rows[7]}")
-        self.xlSheet.cell(row=self.row + 10, column=self.col + 1, value=f"Customer Contact No:- {self.rows[5]}")
+        self.xlSheet.cell(row=self.row + 10, column=self.col + 1, value=f"Customer Contact No:- {self.rows[6]}")
         self.xlSheet.cell(row=self.row + 12, column=self.col + 1, value=self.rows[8])
         self.xlSheet.cell(row=self.row + 9, column=self.col + 5, value=self.headerxl[6])
         self.xlSheet.cell(row=self.row + 6, column=self.col + 7, value=self.headerxl[6])
         self.xlSheet.cell(row=self.row + 6, column=self.col + 5, value=self.rows[2])
         self.xlSheet.cell(row=self.row + 11, column=self.col + 5, value=str(self.delivery_date))
-        self.xlSheet.cell(row=self.row + 32, column=self.col + 7, value=self.rows[11])
-        self.xlSheet.print_area = 'A1:G42'
+        self.xlSheet.cell(row=self.row + 13, column=self.col + 5, value=str("Rs. " + str(self.payment_due) + "/-"))
+        self.xlSheet.cell(row=self.row + 33, column=self.col + 7, value=self.rows[11])
+        self.xlSheet.cell(row=self.row + 34, column=self.col + 7, value=self.rows[12])
+        self.xlSheet.cell(row=self.row + 32, column=self.col + 7, value=self.rows[13])
+        self.xlSheet.cell(row=self.row + 35, column=self.col + 7, value=self.rows[14])
+        self.xlSheet.print_area = 'A1:G43'
         self.xlSheet.print_options.verticalCentered = True
         self.xlSheet.print_options.horizontalCentered = True
         self.row1 = 17
@@ -1240,19 +1256,24 @@ class Invoice:
             for j in self.items[i].keys():
                 self.lis = self.items[i][j]
                 self.names1 = self.lis[0]
+                self.category = self.lis[6]
+                self.sub_category = self.lis[5]
                 self.rates1 = self.lis[1]
-                self.units1 = self.lis[7]
+                self.units1 = self.lis[11]
                 self.quantitys1 = self.lis[2]
                 self.prices1 = self.lis[3]
-                self.xlSheet.cell(row=self.row1, column=self.col + 1, value=self.names1)
+                self.xlSheet.cell(row=self.row1, column=self.col + 1, value=self.category + " " + self.sub_category +
+                                                                            " " + self.names1)
                 self.xlSheet.cell(row=self.row1, column=self.col + 5, value=self.quantitys1)
                 self.xlSheet.cell(row=self.row1, column=self.col + 6, value=self.rates1)
-                self.xlSheet.cell(row=self.row1, column=self.col + 7, value=self.units1)
-                self.xlSheet.cell(row=self.row1, column=self.col + 8, value=self.prices1)
+                self.xlSheet.cell(row=self.row1, column=self.col + 4, value=self.units1)
+                self.xlSheet.cell(row=self.row1, column=self.col + 7, value=self.prices1)
                 self.row1 = self.row1 + 1
 
         self.xlWorkBook.save(f"Bill Records\\{self.rows[7]}{self.rows[2]}.xlsx")
         self.xlWorkBook.close()
+        self.ans = tmsg.showinfo("Success", "Data Saved To Database!\n Click Ok To Close Window")
+        self.invoice_root.destroy()
 
     def print_excel(self):
 
@@ -1764,8 +1785,7 @@ def get_location(event):
     y = root.winfo_rooty()
     return print("X:- " + str(x) + " Y:- " + str(y))
 
-
-# Invoice Class
-obj = Invoice(root)
-# Loop For Running Root Window
-root.mainloop()
+# # Invoice Class
+# obj = Invoice(root)
+# # Loop For Running Root Window
+# root.mainloop()
