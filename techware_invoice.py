@@ -15,7 +15,7 @@ from tkinter import *
 from tkinter import messagebox as tmsg
 from tkinter import ttk, scrolledtext
 
-from win32com.universal import com_error
+import win32com.universal
 
 from Digvijay_Algos.custom_widgets import Custom_treeview, Link_Text, Required_Text
 from openpyxl import load_workbook
@@ -1779,13 +1779,7 @@ class Invoice:
 # Root Window
 root = Tk()
 
-
-def get_location(event):
-    x = root.winfo_rootx()
-    y = root.winfo_rooty()
-    return print("X:- " + str(x) + " Y:- " + str(y))
-
-# # Invoice Class
-# obj = Invoice(root)
-# # Loop For Running Root Window
-# root.mainloop()
+# Invoice Class
+obj = Invoice(root)
+# Loop For Running Root Window
+root.mainloop()

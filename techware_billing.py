@@ -4,8 +4,10 @@ import tkinter.messagebox as tmsg
 import tkinter.ttk as ttk
 from tkinter import *
 from tkinter import scrolledtext, filedialog
+
 import ttkwidgets.autocomplete
 from tkcalendar import DateEntry
+
 from techware_invoice import Invoice
 from test2 import Clock, CreateToolTip
 
@@ -1642,13 +1644,13 @@ class Home:
         self.staff_photo_label.place(relx=0.5, rely=0.3, anchor=CENTER)
 
         self.staff_photo_add_btn_image = PhotoImage(file="Images\\Upload.png")
-        self.staff_photo_add_btn = Button(self.staff_photo_lbl, image=self.staff_photo_add_btn_image, bd=0,
-                                          command=self.insert_photo)
+        self.staff_photo_add_btn = Button(self.staff_photo_lbl, image=self.staff_photo_add_btn_image, bd=0, )
+        # command=self.insert_photo)
         self.staff_photo_add_btn.place(relx=0.01, rely=0.8)
 
         self.staff_photo_capture_btn_image = PhotoImage(file="Images\\Capture.png")
         self.staff_photo_capture_btn = Button(self.staff_photo_lbl, image=self.staff_photo_capture_btn_image,
-                                              bd=0, command=self.capture_photo)
+                                              bd=0, )  # command=self.capture_photo)
         self.staff_photo_capture_btn.place(relx=0.25, rely=0.8)
 
         self.staff_photo_reset_btn_image = PhotoImage(file="Images\\Reset Camera.png")
