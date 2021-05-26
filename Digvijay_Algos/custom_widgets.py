@@ -11,9 +11,9 @@ from tkinter.ttk import *
 import ttkwidgets.autocomplete
 import win32com.client
 from tkcalendar import DateEntry
-from win32com.universal import com_error
+import win32com.universal
 
-from techware_invoice import Invoice
+
 
 
 class Custom_treeview(Treeview):
@@ -1609,6 +1609,7 @@ class Manage_Customer:
 
 
 class Manage_Invoice:
+    from techware_invoice import Invoice
     def __init__(self, root):
         self.invoices_root = root
         self.invoices_dict = {
