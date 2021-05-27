@@ -1775,11 +1775,11 @@ class Invoice:
             self.update_total_price()
 
 
-# Testing Invoice Class
-# Root Window
-root = Tk()
-
-# Invoice Class
-obj = Invoice(root)
-# Loop For Running Root Window
-root.mainloop()
+# # Testing Invoice Class
+# # Root Window
+# root = Tk()
+#
+# # Invoice Class
+# obj = Invoice(root)
+# # Loop For Running Root Window
+# root.mainloop()

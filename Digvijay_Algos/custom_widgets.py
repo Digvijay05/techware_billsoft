@@ -1164,6 +1164,7 @@ class Manage_Staff:
                                    command_options=[self.edit_staff, self.delete_staff],
                                    command_labels=["View/ Edit/ Modify", "Delete"], columns=self.staff_dict,
                                    )
+        self.reset_staff()
 
     def search_staff(self):
         if self.manage.client_search_txt.get() == "":
@@ -1406,6 +1407,7 @@ class Manage_Customer:
                                    command_options=[self.edit_client, self.delete_staff],
                                    command_labels=["View/ Edit/ Modify", "Delete"], columns=self.client_dict,
                                    )
+        self.reset_client()
 
     def search_client(self):
         if self.manage.client_search_txt.get() == "":
@@ -3370,6 +3372,6 @@ class Manage_Expenses:
         self.reset_expense()
 
 
-root = tk.Tk()
-obj = Techware_Start_Window(root)
-root.mainloop()
+# root = tk.Tk()
+# obj = Techware_Start_Window(root)
+# root.mainloop()
