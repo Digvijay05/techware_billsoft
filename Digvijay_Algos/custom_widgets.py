@@ -14,8 +14,6 @@ from tkcalendar import DateEntry
 import win32com.universal
 
 
-
-
 class Custom_treeview(Treeview):
     """
     This ttk Treeview is made custom for Any Software
@@ -1611,7 +1609,6 @@ class Manage_Customer:
 
 
 class Manage_Invoice:
-    from techware_invoice import Invoice
     def __init__(self, root):
         self.invoices_root = root
         self.invoices_dict = {
@@ -1678,6 +1675,7 @@ class Manage_Invoice:
                                     )
 
     def edit_invoice(self):
+        from  techware_invoice import Invoice
         # Connecting To Database
         self.conn = sqlite3.connect("DB\\Business.db")
         self.cursor = self.conn.cursor()
@@ -1976,7 +1974,7 @@ class Manage_Invoice:
             # Deleting All Files
             os.remove(WB_PATH)
 
-        except com_error as e:
+        except win32com.universal.com_error as e:
             print(f"failed. due to {e}")
             return
         else:
@@ -3370,7 +3368,6 @@ class Manage_Expenses:
         conn.commit()
         conn.close()
         self.reset_expense()
-
 
 # root = tk.Tk()
 # obj = Techware_Start_Window(root)

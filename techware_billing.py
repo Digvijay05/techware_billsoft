@@ -7,7 +7,7 @@ from tkinter import scrolledtext, filedialog
 
 import ttkwidgets.autocomplete
 from tkcalendar import DateEntry
-
+import gc
 from Digvijay_Algos.custom_widgets import Add_Staff_Window, Add_Expense_Window, Add_Client_Window, Designation_Window, \
     Category_Window, Unit_Window, Id_Window, Expenses_Window, Manage_Items, Add_Item_Window, Manage_Staff, \
     Manage_Customer, Manage_Invoice, Manage_Expenses
@@ -17,6 +17,8 @@ from test2 import Clock, CreateToolTip
 
 class Home:
     def __init__(self, root):
+        super().__init__()
+        gc.enable()
         self.root = root
         self.root.title("Techware BillSoft V1.0")
         self.root.state("zoomed")
@@ -57,10 +59,6 @@ class Home:
                        background=[('!active', '#00bd61'), ('pressed', '#00e375'), ('active', '#00d16c')]
                        )
         self.style.configure("S.TChkBox", font=("Calibri", 12), takefocus=False)
-        self.style.configure("S.Treeview", background="black", fieldbackground="white", foreground="black")
-
-        self.style.configure("S.Treeview.Heading", background="#26e881", foreground="white", rowheight=35,
-                             font=("Calibri", 15))
 
         self.dashboard = Frame(self.root, bg="#00b33c")
         self.dashboard.place(relx=0, rely=0.130, relwidth=0.150, relheight=0.95)
@@ -601,7 +599,6 @@ class Home:
     def manage_expense(self):
         self.manage_expense_window = Toplevel(self.root)
         self.expenses = Manage_Expenses(self.manage_expense_window)
-
 
 root = Tk()
 obj = Home(root)

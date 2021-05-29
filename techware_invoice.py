@@ -1,27 +1,26 @@
 # Importing Packages
+import gc
 import json
 import os
 import sqlite3
 import time
-import openpyxl.drawing.image
-import wand
-import wand.image
-import win32com
-import win32com.client
-import re
-
 from datetime import date, timedelta
 from tkinter import *
 from tkinter import messagebox as tmsg
 from tkinter import ttk, scrolledtext
 
-import win32com.universal
-
-from Digvijay_Algos.custom_widgets import Custom_treeview, Link_Text, Required_Text
+import openpyxl.drawing.image
+import wand
+import wand.image
+import win32com
+import win32com.client
 from openpyxl import load_workbook
 from tkcalendar import DateEntry
 from ttkwidgets.autocomplete import *
 from wand import exceptions
+from win32com.universal import com_error
+
+from Digvijay_Algos.custom_widgets import Custom_treeview, Link_Text, Required_Text
 
 
 class Invoice:
@@ -507,12 +506,15 @@ class Invoice:
         self.sub_category_txt.place(relx=0.660, rely=0.1, relwidth=0.06)
         self.sub_category_txt.current(0)
 
+        # Discount Variable
+        self.discount_txt_var = StringVar()
+
         # Discount Label
         self.discount_lbl = Label(self.particulars_lbl, text="Discount (%)", font=("Calibri", 10), )  # bg="white")
         self.discount_lbl.place(relx=0.725, rely=0)
 
         # Discount Entry
-        self.discount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12))
+        self.discount_txt = ttk.Entry(self.particulars_lbl, font=("Calibri", 12), textvariable=self.discount_txt_var)
         self.discount_txt.place(relx=0.725, rely=0.1, relwidth=0.06)
         self.discount_txt.bind("<KeyRelease>", self.discount_amount_info_event)
 
@@ -809,13 +811,27 @@ class Invoice:
         self.update_client()
 
     def discount_amount_info_event(self, event):
-        self.discount = float(self.discount_txt.get())
+        self.discount_amount_info()
+
+    def discount_amount_info(self):
+        if self.discount_txt.get() != "":
+            self.discount = int(self.discount_txt.get())
+        elif self.discount_txt.get() == "" or int(self.discount_txt.get()) < 100:
+            self.discount = 0
+            self.discount_txt_var.set("0")
+        if int(self.discount_txt.get()) > 100:
+            self.discount = 100
+            self.discount_txt_var.set("100")
         self.rate = int(self.item_rate_txt.get())
         self.quantity = int(self.item_qty_txt.get())
 
         self.final_rate = self.rate * self.quantity
-        self.final_discount = (self.discount * self.final_rate) / 100
-        self.final_amount = self.amount_var.set(self.final_rate - self.final_discount)
+        if self.discount != 0:
+            self.final_discount = (self.discount * self.final_rate) / 100
+            self.final_amount = self.amount_var.set(self.final_rate - self.final_discount)
+        elif self.discount == 0:
+            self.final_discount = self.final_rate
+            self.final_amount = self.amount_var.set(self.final_discount)
 
     def update_payment_info_event(self, event):
         if self.payment_mode_txt.get() == "Cheque" or \
@@ -866,6 +882,8 @@ class Invoice:
         self.item_code_var.set(self.item_code_name)
         self.item_rate_var.set(self.item_rate_name)
         self.item_qty_var.set("1")
+        self.item_units_txt.set("Pcs")
+        self.discount_amount_info()
 
     def update_client(self):
         if self.bill_to_var.get() == "cash":
@@ -885,6 +903,7 @@ class Invoice:
             self.client_gstin_lbl.required_frame.destroy()
             self.client_gstin_lbl.required_str.destroy()
             self.client_gstin_lbl.required_lbl.destroy()
+            gc.collect(1)
             # Contact Label
             self.contact_no_lbl = Label(self.invoice_information_lbl, text="Contact")
             self.contact_no_lbl.place(relx=0.025, rely=0.5)
@@ -896,6 +915,7 @@ class Invoice:
             # Client GSTIN
             self.client_gstin_lbl = Label(self.invoice_information_lbl, text="Client GSTIN")
             self.client_gstin_lbl.place(relx=0.61, rely=0.5)
+            self.invoice_type_txt.current(2)
             return "CASH"
         else:
             # Client Name Entry
@@ -938,24 +958,28 @@ class Invoice:
                                                   required_text="Client GSTIN   ")  # bg="white")
             self.client_gstin_lbl.required_lbl.place(relx=0.61, rely=0.5)
             self.client_gstin_lbl.required_frame.place(relx=0.61, rely=0.5)
+            self.invoice_type_txt.current(2)
             return "CLIENT"
-        self.invoice_type_txt.current(2)
 
     # Adding Client Info
     def client_info_add(self, event):
         self.conn = sqlite3.connect("DB\\Clients.db")
         self.cursor = self.conn.cursor()
-
+        self.cursor.execute("DELETE FROM CLIENT WHERE id = ?", (1,))
         self.cursor.execute("SELECT * FROM CLIENT where Full_Name = ?", (self.client_name_txt.get(),))
         self.rows = self.cursor.fetchone()
-
+        print(self.rows)
         self.client_contact = self.rows[5]
         self.client_address = self.rows[8]
+        self.client_gstin = self.rows[9]
+        self.client_state = self.rows[7]
         self.client_balance = self.rows[22]
 
         self.contact_no_var.set(self.client_contact)
         self.contact_address_var.set(self.client_address)
         self.payment_balance_var.set(self.client_balance)
+        self.client_gstin_var.set(self.client_gstin)
+        self.invoice_place_of_supply_txt.set(self.client_state)
 
     # Retail Options Window Function
     def retail_options(self, event):
@@ -1099,6 +1123,7 @@ class Invoice:
                     self.save_items = json.dumps(self.items, indent=len(self.items))
                     with open(f"Details\\{self.client_name_txt.get()}{self.invoice_no_txt.get()}.json", "w") as outfile:
                         outfile.write(self.save_items)
+                    self.save_excel()
                     self.conn = sqlite3.connect("DB\\Business.db")
                     self.cursor = self.conn.cursor()
                     self.cursor.execute("SELECT * FROM ID")
@@ -1114,7 +1139,6 @@ class Invoice:
                     self.cursor.execute(self.sql_string, (self.invoice_number, "Invoice"))
                     self.conn.commit()
                     self.conn.close()
-                    self.save_excel()
             elif self.bill_to_var.get() == "cash":
                 if self.client_name_txt.get() == "" or self.invoice_type_txt.get() == "Select" or \
                         self.invoice_place_of_supply_txt.get() == \
@@ -1180,6 +1204,7 @@ class Invoice:
                     self.cursor.execute(self.save_bill_query, self.save_bill_values)
                     self.conn.commit()
                     self.conn.close()
+                    self.save_excel()
                     self.save_items = json.dumps(self.items, indent=len(self.items))
                     with open(f"Details\\{self.client_name_txt.get()}{self.invoice_no_txt.get()}.json", "w") as outfile:
                         outfile.write(self.save_items)
@@ -1199,7 +1224,6 @@ class Invoice:
                     self.cursor.execute(self.sql_string, (self.invoice_number, "Invoice"))
                     self.conn.commit()
                     self.conn.close()
-                    self.save_excel()
         else:
             self.invoice_root.destroy()
 
@@ -1775,11 +1799,11 @@ class Invoice:
             self.update_total_price()
 
 
-# # Testing Invoice Class
-# # Root Window
-# root = Tk()
-#
-# # Invoice Class
-# obj = Invoice(root)
-# # Loop For Running Root Window
-# root.mainloop()
+# Testing Invoice Class
+# Root Window
+root = Tk()
+
+# Invoice Class
+obj = Invoice(root)
+# Loop For Running Root Window
+root.mainloop()
