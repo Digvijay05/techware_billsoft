@@ -22,7 +22,7 @@ from win32com.universal import com_error
 
 from Digvijay_Algos.custom_widgets import Custom_treeview, Link_Text, Required_Text
 
-
+# Class For Creating Invoice
 class Invoice:
     shippingprice: int
 
@@ -30,19 +30,29 @@ class Invoice:
     def __init__(self, root):
         # Root Window
         self.invoice_root = root
+        # Attributes for configuring root window
+
+        # setting root window to only contain X
         self.invoice_root.attributes('-toolwindow', 1)
+
+        # setting root window to remain on top
         self.invoice_root.attributes('-topmost', 1)
 
+        # Giving title to Root Window
         self.invoice_root.title("Unsaved Invoice")
+
+        # Setting width heigh x and y of root window
         root.geometry("%dx%d+66+16" % (1185, 665))
+
+        # setting background of root window to white
         # self.invoice_root['bg'] = "white"
 
-        # Style Of TTK
+        # Style Of TTK variable
         self.style = ttk.Style(self.invoice_root)
 
         # Loading TTK Themes
-        self.invoice_root.tk.eval("""
-                set base_theme_dir C:/Users/Digvijay/Downloads/awthemes-10.2.0/awthemes-10.2.0
+        self.invoice_root.tk.eval(f"""
+                set base_theme_dir {os.getcwd()+'awthemes-10.2.0\\awthemes-10.2.0'}
 
                 package ifneeded awthemes 10.2.0 \
                     [list source [file join $base_theme_dir awthemes.tcl]]
