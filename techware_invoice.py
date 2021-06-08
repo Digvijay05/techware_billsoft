@@ -22,6 +22,7 @@ from win32com.universal import com_error
 
 from Digvijay_Algos.custom_widgets import Custom_treeview, Link_Text, Required_Text
 
+
 # Class For Creating Invoice
 class Invoice:
     shippingprice: int
@@ -52,7 +53,7 @@ class Invoice:
 
         # Loading TTK Themes
         self.invoice_root.tk.eval(f"""
-                set base_theme_dir {os.getcwd()+'awthemes-10.2.0\\awthemes-10.2.0'}
+                set base_theme_dir {os.getcwd()}\\awthemes-10.2.0\\awthemes-10.2.0
 
                 package ifneeded awthemes 10.2.0 \
                     [list source [file join $base_theme_dir awthemes.tcl]]
@@ -1057,6 +1058,9 @@ class Invoice:
     def update_total_price_event(self, event):
         self.update_total_price()
 
+    def prepare_reports(self):
+        pass
+
     # Saving Bills
     def save_operation(self):
         self.ans = tmsg.askquestion("Are you Sure?", f"Are you Sure to Save Invoice No. '{self.invoice_no_txt.get()}'")
@@ -1309,7 +1313,7 @@ class Invoice:
         self.ans = tmsg.showinfo("Success", "Data Saved To Database!\n Click Ok To Close Window")
         self.invoice_root.destroy()
 
-    def print_excel(self):
+    def save_png(self):
 
         # Getting Details From Database
         self.conn = sqlite3.connect("DB\\Invoices.db")
@@ -1360,22 +1364,26 @@ class Invoice:
         if self.ans == "yes":
             # Loading Start
             self.loading_start = time.time()
-            self.loading_screen = Tk()
-            self.loading_screen.overrideredirect(True)
+            self.loading_screen = Toplevel(self.invoice_root)
+            self.loading_screen.overrideredirect(1)
             self.loading_screen.focus_set()
             self.loading_bar = ttk.Progressbar(self.loading_screen, orient=HORIZONTAL, length=200,
                                                mode="determinate", maximum=100, value=20)
             self.loading_bar.pack()
             # Save Function
             self.save_operation()
+            time.sleep(2)
             self.loading_bar.step(50)
             # Print Function
-            self.print_excel()
+            time.sleep(4)
+            self.save_png()
+            time.sleep(1)
             self.invoice_root.update_idletasks()
             self.invoice = self.invoice_no_txt.get()
             # Destroying Root Window
             self.invoice_root.destroy()
             del self.invoice_root
+            time.sleep(2)
             self.loading_bar.step(30)
             self.loading_screen.destroy()
 
