@@ -52,8 +52,8 @@ class Invoice:
         self.style = ttk.Style(self.invoice_root)
 
         # Loading TTK Themes
-        self.invoice_root.tk.eval(f"""
-                set base_theme_dir {os.getcwd()}\\awthemes-10.2.0\\awthemes-10.2.0
+        self.invoice_root.tk.eval("""
+                set base_theme_dir awthemes-10.2.0/awthemes-10.2.0
 
                 package ifneeded awthemes 10.2.0 \
                     [list source [file join $base_theme_dir awthemes.tcl]]
