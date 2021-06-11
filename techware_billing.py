@@ -28,7 +28,7 @@ class Home:
         self.style = ttk.Style(self.root)
 
         self.root.tk.eval("""
-        set base_theme_dir C:/Users/Digvijay/Downloads/awthemes-10.2.0/awthemes-10.2.0
+        set base_theme_dir awthemes-10.2.0/awthemes-10.2.0
 
         package ifneeded awthemes 10.2.0 \
             [list source [file join $base_theme_dir awthemes.tcl]]
