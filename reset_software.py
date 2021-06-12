@@ -166,4 +166,4 @@ with IncrementalBar('Processing', max=7) as bar:
     cursor.execute(sql)
     bar.finish()
     print(bar.progress * 100)
-    print("done.")
+    print("done")
