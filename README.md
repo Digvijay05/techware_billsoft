@@ -12,4 +12,4 @@ User can generate bill after selecting at least 1 item.
 Order cancellation is also provided.
 Bill will be displayed in new window to user and will be saved in 'Bill Records' folder.
 
-Python Dictionary is used to store(Temporary Storage) customer's order and text file are used to store(Permanent Storage) menu and bills with customers information.
+Python Dictionary is used to store(Temporary Storage) customer's order and db files are used to store(Permanent Storage) menu and bills with customers information.
