@@ -1,111 +1,49 @@
-# Techware BillSoft
+# Techware BillSoft (Legacy Python Application)
 
-A modern, local-first Point of Sale (POS) and inventory management desktop application built with FastAPI, React, and Electron.
-
-## Problem Statement
-
-Retail and service businesses require reliable, offline-capable systems to manage their daily operations. Legacy billing software often suffers from poor UI, slow performance, and monolithic architectures that make updates impossible. Techware BillSoft modernizes the local business experience by combining the speed of a web tech stack with the reliability of an offline desktop executable.
-
-## Key Features
-
-- **Point of Sale (POS):** Fast, intuitive cart system for generating invoices and calculating totals.
-- **Financial Dashboards:** Real-time reporting on total revenue, net profit, unpaid invoices, and operational expenses.
-- **Inventory Management:** Full CRUD capabilities for products and services.
-- **Customer CRM:** Track customer details and purchase history.
-- **Staff & Expense Tracking:** Maintain employee records and log operational costs.
-- **Legacy Migration:** Built-in scripts to seamlessly upgrade from v1.0 (JSON-based) to v2.0 (SQL).
+A robust, local-first Point of Sale (POS) and billing management desktop application built using Python, Tkinter, and SQLite. This repository contains the source code for the original desktop application designed for offline business operations.
 
 ## Architecture
 
-BillSoft is built using a decoupled architecture, packaged as a single desktop application:
+The application is a monolithic desktop client built natively in Python. It relies heavily on Tkinter for the graphical user interface and SQLite for local, serverless database management. The project uses customized Tkinter widgets for advanced UI behaviors and interacts with the Windows COM API for Microsoft Excel integration and reporting.
 
-1. **Backend Process:** A standalone Python process running FastAPI and SQLite.
-2. **Frontend Process:** An Electron application serving a React SPA, communicating with the local backend via REST.
+### Core Modules
 
-```mermaid
-graph TD
-    A[Electron Main Process] -->|Spawns| B(Python FastAPI Backend)
-    A -->|Renders| C[React SPA]
-    C <-->|REST API via Axios| B
-    B <-->|SQLAlchemy ORM| D[(SQLite Database)]
-```
+*   **`techware_billing.py`**: The main entry point and dashboard GUI. This module orchestrates the application's root window, menu system, and high-level navigation, providing access to all secondary operations.
+*   **`techware_invoice.py`**: Handles the complex business logic and GUI for invoice creation. It manages real-time cart calculations, customer data retrieval, tax application, and saving the finalized invoice records directly to the local SQLite databases.
+*   **`show_invoices.py`**: Provides the interface for invoice management. This module allows users to search, filter, view, print, and delete existing invoices from the database.
+*   **`reset_software.py`**: A database management and schema reset utility. It contains the data definition language (DDL) necessary to drop and recreate the SQLite tables (e.g., Business, Clients, Invoices, Items, Employee), effectively resetting the software to a clean slate.
+*   **`save_excel.py` & `save_reports.py`**: Reporting modules that leverage `openpyxl` and `win32com.client`. They automate the generation of financial reports, export data to Excel spreadsheets, and handle the layout and saving of these records.
+
+### Foundational Dependencies
+
+The core modules depend on several foundational algorithms and custom UI components:
+
+*   **`Digvijay_Algos/custom_widgets.py`**: A foundational UI library specific to this project. It contains subclasses of standard Tkinter widgets (like `Custom_treeview`, `Link_Text`, `Required_Text`) and entirely new composite windows (e.g., `Add_Staff_Window`, `Manage_Items`, `Manage_Invoice`). This encapsulates complex UI behavior and ensures a consistent design language across the application.
+*   **`test2.py`**: Contains helper utilities such as custom `Clock` widgets and `CreateToolTip` classes for enhancing the user experience within the Tkinter dashboard.
 
 ## Technology Stack
 
-- **Backend:** Python 3, FastAPI, SQLAlchemy, Pydantic, Uvicorn, PyInstaller
-- **Frontend:** React 19, TypeScript, Tailwind CSS, TanStack React Query, Vite
-- **Desktop Packaging:** Electron, Electron Builder
-- **Database:** SQLite
+*   **Language:** Python 3.x
+*   **GUI Framework:** Tkinter (with `ttk`, `awthemes` for styling, and `tkcalendar` for date inputs)
+*   **Database:** SQLite3
+*   **Reporting & Automation:** `openpyxl`, `win32com.client` (Microsoft Excel Interop), `wand` (ImageMagick binding for Python)
+*   **UI Addons:** `ttkwidgets.autocomplete`
 
-## Project Structure
+## Database Structure
 
-```text
-techware_billsoft/
-├── backend/                  # FastAPI Application
-│   ├── routes/               # API endpoints (auth, invoices, items, etc.)
-│   ├── models.py             # SQLAlchemy database models
-│   ├── schemas.py            # Pydantic validation schemas
-│   ├── database.py           # SQLite connection setup
-│   └── migrate_legacy_data.py# V1 to V2 migration script
-├── frontend/                 # React SPA & Electron
-│   ├── electron/             # Electron main process & preload scripts
-│   ├── src/                  # React components, pages, and hooks
-│   └── package.json          # Node dependencies and build scripts
-└── build.bat                 # Unified build pipeline for Windows
-```
+The application segments data across multiple SQLite database files (stored under `DB/`) for modularity:
+*   `Business.db`: Company settings and configurations.
+*   `Clients.db`: Customer CRM and details.
+*   `Invoices.db`: Billing records, invoice line items, and transaction history.
+*   `Items.db`: Inventory, product catalog, and pricing.
+*   `Employee.db`: Staff records and tracking.
 
 ## Getting Started
 
-### Prerequisites
-- Python 3.10+
-- Node.js 20+
+The project can be executed locally by running the main dashboard script via a Python interpreter:
 
-### Development Setup
-
-**1. Start the Backend**
-```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
-
-**2. Start the Frontend**
-In a new terminal:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-The application will be available at `http://localhost:5173`.
-
-## Deployment
-
-To package the application into a standalone Windows `.exe` file:
-
-Run the included build script from the root directory:
 ```cmd
-build.bat
+python techware_billing.py
 ```
 
-**What this does:**
-1. Compiles the FastAPI backend into a standalone executable using PyInstaller.
-2. Builds the React production bundle using Vite.
-3. Uses Electron Builder to package the UI and the backend binary into a single installer located in the `release/` directory.
-
-## Security Considerations
-
-- **Local Execution:** The application is designed to run locally. Data is stored in a local SQLite file (`business_v2.db`), ensuring data privacy for the business owner.
-- **Authentication:** Role-based access is implemented. Passwords are hashed using SHA-256 before being stored in the database. 
-
-## Future Improvements
-
-- Add automated unit and integration tests for CI/CD pipelines.
-- Implement automated database backups to external cloud storage (e.g., AWS S3 or Google Drive).
-- Upgrade password hashing from SHA-256 to bcrypt/Argon2.
-- Add receipt printer and barcode scanner hardware integrations.
-
-## License
-
-Proprietary Software. © Techware.
+It can also be packaged into a standalone Windows executable using PyInstaller, leveraging the included `Techware Billing System.spec` file.
